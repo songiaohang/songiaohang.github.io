@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Giao Nhan Hang</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.khung {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.15);
+}
+
+h1 {
+  margin-top: 0;
+}
+
+#reader {
+  width: 100%;
+  margin: 20px auto;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  background: #1976d2;
+  color: white;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.thongbao {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #eeeeee;
+}
+
+.qr {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="khung">
+
+<h1>GIAO NHAN HANG</h1>
+
+<div id="trangThai">
+Dang khoi dong camera...
+</div>
+
+<div id="reader"></div>
+
+<div class="qr">
+Ma QR:
+<span id="maQR">Chua quet</span>
+</div>
+
+<button onclick="moCamera()">
+MO CAMERA
+</button>
+
+<button onclick="dungCamera()">
+DUNG CAMERA
+</button>
+
+<div id="ketQua" class="thongbao">
+Hay dua ma QR vao khung camera.
+</div>
+
+</div>
+
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+
+let html5QrCode = null;
+let dangChay = false;
+
+
+/* =================================================
+   MO CAMERA
+   ================================================= */
+
+function moCamera() {
+
+  if (dangChay) {
+    return;
+  }
+
+  document.getElementById("trangThai").innerHTML =
+    "Dang tim camera...";
+
+  Html5Qrcode.getCameras()
+
+    .then(function(cameras) {
+
+      if (!cameras || cameras.length === 0) {
+
+        document.getElementById("trangThai").innerHTML =
+          "Khong tim thay camera.";
+
+        return;
+      }
+
+      let cameraId = cameras[0].id;
+
+      /* Uu tien camera sau */
+
+      for (let i = 0; i < cameras.length; i++) {
+
+        let ten =
+          (cameras[i].label || "").toLowerCase();
+
+        if (
+          ten.includes("back") ||
+          ten.includes("rear") ||
+          ten.includes("environment") ||
+          ten.includes("sau")
+        ) {
+
+          cameraId = cameras[i].id;
+          break;
+        }
+      }
+
+      html5QrCode =
+        new Html5Qrcode("reader");
+
+      const cauHinh = {
+        fps: 10,
+        qrbox: {
+          width: 250,
+          height: 250
+        }
+      };
+
+      html5QrCode.start(
+
+        cameraId,
+
+        cauHinh,
+
+        function(maQR) {
+
+          xuLyQR(maQR);
+
+        },
+
+        function(loi) {
+
+          /* Bo qua loi quet tam thoi */
+
+        }
+
+      )
+
+      .then(function() {
+
+        dangChay = true;
+
+        document.getElementById("trangThai").innerHTML =
+          "Camera dang hoat dong";
+
+      })
+
+      .catch(function(err) {
+
+        document.getElementById("trangThai").innerHTML =
+          "Khong mo duoc camera";
+
+        document.getElementById("ketQua").innerHTML =
+          String(err);
+
+      });
+
+    })
+
+    .catch(function(err) {
+
+      document.getElementById("trangThai").innerHTML =
+        "Khong duoc phep truy cap camera";
+
+      document.getElementById("ketQua").innerHTML =
+        String(err);
+
+    });
+}
+
+
+/* =================================================
+   DUNG CAMERA
+   ================================================= */
+
+function dungCamera() {
+
+  if (!html5QrCode || !dangChay) {
+    return;
+  }
+
+  html5QrCode.stop()
+
+    .then(function() {
+
+      html5QrCode.clear();
+
+      dangChay = false;
+
+      document.getElementById("trangThai").innerHTML =
+        "Da dung camera";
+
+    })
+
+    .catch(function(err) {
+
+      console.log(err);
+
+    });
+}
+
+
+/* =================================================
+   XU LY QR
+   ================================================= */
+
+function xuLyQR(maQR) {
+
+  maQR = String(maQR).trim();
+
+  document.getElementById("maQR").innerText =
+    maQR;
+
+  document.getElementById("ketQua").innerHTML =
+    "Da quet thanh cong ma QR: " + maQR;
+
+  /* Dung camera sau khi quet */
+
+  if (html5QrCode && dangChay) {
+
+    html5QrCode.stop()
+
+      .then(function() {
+
+        html5QrCode.clear();
+
+        dangChay = false;
+
+      })
+
+      .catch(function(err) {
+
+        console.log(err);
+
+      });
+  }
+}
+
+</script>
+
+</body>
+</html>
