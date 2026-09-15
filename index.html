@@ -1,103 +1,170 @@
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>Giao Nhan Hang</title>
+    <title>SO GIAO HANG</title>
 
-<style>
+    <!-- THU VIEN QUET QR -->
+    <script src="https://unpkg.com/html5-qrcode"
+            type="text/javascript"></script>
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-    margin: 0;
-    padding: 15px;
-}
+    <style>
 
-.khung {
-    max-width: 520px;
-    margin: auto;
-    background: white;
-    padding: 18px;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-}
+        * {
+            box-sizing: border-box;
+        }
 
-h1 {
-    text-align: center;
-    margin-top: 5px;
-}
+        body {
+            margin: 0;
+            padding: 12px;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+        }
 
-#reader {
-    width: 100%;
-    margin: 15px auto;
-}
+        h2 {
+            text-align: center;
+            margin: 5px 0 15px 0;
+        }
 
-.trang-thai {
-    text-align: center;
-    padding: 12px;
-    margin: 10px 0;
-    background: #eeeeee;
-    border-radius: 8px;
-}
+        .khung {
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+        }
 
-.ma-qr {
-    text-align: center;
-    font-size: 23px;
-    font-weight: bold;
-    padding: 12px;
-}
+        .hop {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.10);
+        }
 
-.anh-chup {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-    display: none;
-}
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            margin: 6px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
 
-.nhan-anh {
-    text-align: center;
-    font-weight: bold;
-    margin-top: 15px;
-}
+        button {
+            width: 100%;
+            padding: 14px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 9px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-button {
-    width: 100%;
-    padding: 15px;
-    margin: 7px 0;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    background: #1976d2;
-    color: white;
-}
+        .nutXanh {
+            background: #2196f3;
+            color: white;
+        }
 
-button:active {
-    transform: scale(0.98);
-}
+        .nutLuc {
+            background: #4caf50;
+            color: white;
+        }
 
-button.phu {
-    background: #666666;
-}
+        .nutCam {
+            background: #ff9800;
+            color: white;
+        }
 
-button.xanh {
-    background: #188038;
-}
+        .nutDo {
+            background: #f44336;
+            color: white;
+        }
 
-button.do {
-    background: #d93025;
-}
+        .nutTim {
+            background: #673ab7;
+            color: white;
+        }
 
-.an {
-    display: none;
-}
+        .nutXam {
+            background: #666;
+            color: white;
+        }
 
-</style>
+        #manHinhDangNhap {
+            display: block;
+        }
+
+        #manHinhChinh {
+            display: none;
+        }
+
+        #manHinhQuet {
+            display: none;
+        }
+
+        #reader {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #anhPreview {
+            width: 100%;
+            display: none;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        #thongTinDon {
+            display: none;
+        }
+
+        .dong {
+            padding: 7px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nhan {
+            font-weight: bold;
+        }
+
+        .giaTri {
+            color: #333;
+        }
+
+        #trangThai {
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        #ketQuaQR {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .tieuDeNho {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .an {
+            display: none !important;
+        }
+
+    </style>
 
 </head>
 
@@ -106,108 +173,549 @@ button.do {
 
 <div class="khung">
 
-<h1>GIAO NHAN HANG</h1>
+    <h2>SO GIAO HANG</h2>
 
 
-<div id="trangThai"
-     class="trang-thai">
+    <!-- ================================================= -->
+    <!-- MAN HINH DANG NHAP -->
+    <!-- ================================================= -->
 
-    San sang quet QR
+    <div id="manHinhDangNhap"
+         class="hop">
+
+        <div class="tieuDeNho">
+            DANG NHAP NHAN VIEN
+        </div>
+
+        <input
+            type="text"
+            id="maNV"
+            placeholder="Ma nhan vien">
+
+        <input
+            type="password"
+            id="matKhau"
+            placeholder="Mat khau">
+
+        <button
+            class="nutXanh"
+            onclick="dangNhapHeThong()">
+
+            DANG NHAP
+
+        </button>
+
+        <div id="baoLoiDangNhap"></div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- MAN HINH CHINH -->
+    <!-- ================================================= -->
+
+    <div id="manHinhChinh">
+
+        <div class="hop">
+
+            <div class="tieuDeNho">
+                THONG TIN NHAN VIEN
+            </div>
+
+            <div class="dong">
+                <span class="nhan">
+                    Ma NV:
+                </span>
+
+                <span id="hienMaNV"></span>
+            </div>
+
+            <div class="dong">
+                <span class="nhan">
+                    Ten:
+                </span>
+
+                <span id="hienTenNV"></span>
+            </div>
+
+        </div>
+
+
+        <div class="hop">
+
+            <div class="tieuDeNho">
+                CHON NGHIEP VU
+            </div>
+
+            <button
+                class="nutLuc"
+                onclick="batDauQuet('nhanHang')">
+
+                NHAN HANG TU KHO
+
+            </button>
+
+
+            <button
+                class="nutXanh"
+                onclick="batDauQuet('giaoHang')">
+
+                GIAO HANG CHO KHACH
+
+            </button>
+
+
+            <button
+                class="nutCam"
+                onclick="batDauQuet('hangHoan')">
+
+                HANG HOAN
+
+            </button>
+
+
+            <button
+                class="nutTim"
+                onclick="batDauQuet('nhapLaiKho')">
+
+                NHAP LAI KHO
+
+            </button>
+
+
+            <button
+                class="nutXam"
+                onclick="dangXuat()">
+
+                DANG XUAT
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- MAN HINH QUET QR -->
+    <!-- ================================================= -->
+
+    <div id="manHinhQuet">
+
+        <div class="hop">
+
+            <div id="tenNghiepVu"
+                 class="tieuDeNho">
+            </div>
+
+            <div id="trangThai">
+                Dang khoi dong camera...
+            </div>
+
+            <div id="reader"></div>
+
+            <div id="ketQuaQR">
+                Chua quet QR
+            </div>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- THONG TIN DON -->
+        <!-- ================================================= -->
+
+        <div id="thongTinDon"
+             class="hop">
+
+            <div class="tieuDeNho">
+                THONG TIN DON HANG
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Ma QR:
+                </span>
+
+                <span id="ttMaQR"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Ma don:
+                </span>
+
+                <span id="ttMaDon"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Khach hang:
+                </span>
+
+                <span id="ttKhachHang"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    So dien thoai:
+                </span>
+
+                <span id="ttSoDienThoai"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Dia chi:
+                </span>
+
+                <span id="ttDiaChi"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Ten hang:
+                </span>
+
+                <span id="ttTenHang"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    So luong:
+                </span>
+
+                <span id="ttSoLuong"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Tien hang:
+                </span>
+
+                <span id="ttTienHang"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Tien ship:
+                </span>
+
+                <span id="ttTienShip"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Tong tien:
+                </span>
+
+                <span id="ttTongTien"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Ton kho:
+                </span>
+
+                <span id="ttTonKho"></span>
+            </div>
+
+
+            <div class="dong">
+                <span class="nhan">
+                    Trang thai:
+                </span>
+
+                <span id="ttTrangThai"></span>
+            </div>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- ANH -->
+        <!-- ================================================= -->
+
+        <div class="hop">
+
+            <img
+                id="anhPreview"
+                alt="Anh kien hang">
+
+
+            <button
+                id="btnChupLai"
+                class="nutCam an"
+                onclick="chupLaiAnh()">
+
+                CHUP LAI ANH
+
+            </button>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- PHAN GIAO HANG -->
+        <!-- ================================================= -->
+
+        <div id="phanGiaoHang"
+             class="hop an">
+
+            <div class="tieuDeNho">
+                THANH TOAN
+            </div>
+
+
+            <label>
+                Tien hang
+            </label>
+
+            <select id="thanhToanHang">
+
+                <option value="">
+                    -- Chon trang thai --
+                </option>
+
+                <option value="DA_THU">
+                    DA THU
+                </option>
+
+                <option value="CHUA_THU">
+                    CHUA THU
+                </option>
+
+            </select>
+
+
+            <label>
+                Phuong thuc tien hang
+            </label>
+
+            <select id="phuongThucHang">
+
+                <option value="">
+                    -- Chon phuong thuc --
+                </option>
+
+                <option value="TIEN_MAT">
+                    TIEN MAT
+                </option>
+
+                <option value="CHUYEN_KHOAN">
+                    CHUYEN KHOAN
+                </option>
+
+                <option value="COD">
+                    COD
+                </option>
+
+            </select>
+
+
+            <label>
+                Tien ship
+            </label>
+
+            <select id="thanhToanShip">
+
+                <option value="">
+                    -- Chon trang thai --
+                </option>
+
+                <option value="DA_THU">
+                    DA THU
+                </option>
+
+                <option value="CHUA_THU">
+                    CHUA THU
+                </option>
+
+            </select>
+
+
+            <label>
+                Phuong thuc tien ship
+            </label>
+
+            <select id="phuongThucShip">
+
+                <option value="">
+                    -- Chon phuong thuc --
+                </option>
+
+                <option value="TIEN_MAT">
+                    TIEN MAT
+                </option>
+
+                <option value="CHUYEN_KHOAN">
+                    CHUYEN KHOAN
+                </option>
+
+                <option value="COD">
+                    COD
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- LY DO HOAN -->
+        <!-- ================================================= -->
+
+        <div id="phanHangHoan"
+             class="hop an">
+
+            <div class="tieuDeNho">
+                LY DO HANG HOAN
+            </div>
+
+            <select id="lyDoHoan">
+
+                <option value="">
+                    -- Chon ly do --
+                </option>
+
+                <option value="KHACH_KHONG_NHAN">
+                    KHACH KHONG NHAN
+                </option>
+
+                <option value="KHACH_HEN_LAI">
+                    KHACH HEN LAI
+                </option>
+
+                <option value="SAI_DIA_CHI">
+                    SAI DIA CHI
+                </option>
+
+                <option value="HANG_LOI">
+                    HANG LOI
+                </option>
+
+                <option value="KHAC">
+                    LY DO KHAC
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- NUT THUC HIEN -->
+        <!-- ================================================= -->
+
+        <div class="hop">
+
+            <button
+                id="btnThucHien"
+                class="nutLuc"
+                onclick="thucHienNghiepVu()">
+
+                THUC HIEN
+
+            </button>
+
+
+            <button
+                class="nutXam"
+                onclick="veManHinhChinh()">
+
+                QUAY LAI
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
-
-<!-- KHU VUC CAMERA -->
-
-<div id="reader"></div>
-
-
-<!-- MA QR -->
-
-<div class="ma-qr">
-
-    Ma QR:
-    <span id="maQR">
-        Chua quet
-    </span>
-
-</div>
-
-
-<!-- ANH TU DONG CHUP -->
-
-<div id="nhanAnh"
-     class="nhan-anh an">
-
-    Anh vua chup:
-
-</div>
-
-
-<img id="anhChup"
-     class="anh-chup">
-
-
-<!-- NUT -->
-
-<button onclick="moCamera()">
-
-    MO CAMERA
-
-</button>
-
-
-<button onclick="chupLai()"
-        class="xanh">
-
-    CHUP LAI
-
-</button>
-
-
-<button onclick="quetMoi()"
-        class="phu">
-
-    QUET QR MOI
-
-</button>
-
-
-<div id="ketQua"
-     class="trang-thai">
-
-    Hay dua ma QR vao khung camera.
-
-</div>
-
-
-</div>
-
-
-<script src="https://unpkg.com/html5-qrcode"></script>
 
 
 <script>
-/* =====================================================
-   TAO TIENG BIP
-   ===================================================== */
+
+
+// =======================================================
+// CAU HINH
+// =======================================================
+
+const URL_APPS_SCRIPT =
+    "https://script.google.com/macros/s/AKfycbxeQSO_DE18GmlRidLJNF4oMs4T7bQ2u1SyERrHtQgJm2cPgkickHyKxh_AbmI0k-Fi8w/exec";
+
+
+// =======================================================
+// BIEN
+// =======================================================
+
+let html5QrCode = null;
+
+let maQRHienTai = "";
+
+let anhBase64 = "";
+
+let maNVDangNhap = "";
+
+let tenNVDangNhap = "";
+
+let nghiepVuHienTai = "";
+
+let donHienTai = null;
+
+let dangXuLy = false;
 
 let audioContext = null;
 
-function taoTiengBip(tanSo, thoiGian, amLuong) {
+
+// =======================================================
+// TIENG BIP
+// =======================================================
+
+function taoTiengBip(
+    tanSo,
+    thoiGian,
+    amLuong
+) {
 
     try {
 
         if (!audioContext) {
 
             audioContext =
-                new (window.AudioContext ||
-                     window.webkitAudioContext)();
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
 
         }
 
-        if (audioContext.state === "suspended") {
+        if (
+            audioContext.state ===
+            "suspended"
+        ) {
+
             audioContext.resume();
+
         }
 
         const oscillator =
@@ -216,7 +724,8 @@ function taoTiengBip(tanSo, thoiGian, amLuong) {
         const gain =
             audioContext.createGain();
 
-        oscillator.type = "square";
+        oscillator.type =
+            "square";
 
         oscillator.frequency.value =
             tanSo;
@@ -237,17 +746,21 @@ function taoTiengBip(tanSo, thoiGian, amLuong) {
             thoiGian
         );
 
+    } catch (e) {
+
+        console.log(
+            "Khong phat duoc tieng bip:",
+            e
+        );
+
     }
 
-    catch(e) {
-
-        console.log("Khong phat duoc tieng bip:", e);
-
-    }
 }
 
 
-/* BIP KHI QUET QR */
+// =======================================================
+// BIP QUET QR
+// =======================================================
 
 function bipQuetQR() {
 
@@ -260,7 +773,9 @@ function bipQuetQR() {
 }
 
 
-/* BIP KHI CHUP ANH XONG */
+// =======================================================
+// BIP CHUP ANH
+// =======================================================
 
 function bipChupAnh() {
 
@@ -273,594 +788,1728 @@ function bipChupAnh() {
 }
 
 
-let html5QrCode = null;
+// =======================================================
+// DANG NHAP
+// =======================================================
 
-let dangChay = false;
+function dangNhapHeThong() {
 
-let daQuet = false;
+    const maNV =
+        document
+        .getElementById("maNV")
+        .value
+        .trim();
 
-let anhBase64 = "";
+    const matKhau =
+        document
+        .getElementById("matKhau")
+        .value
+        .trim();
 
-let maQRHienTai = "";
 
+    if (!maNV) {
 
-/* =====================================================
-   MO CAMERA
-   ===================================================== */
+        hienLoiDangNhap(
+            "Hay nhap ma nhan vien."
+        );
 
-function moCamera() {
-
-    if (dangChay) {
         return;
+
     }
 
-    daQuet = false;
 
-    document.getElementById("trangThai").innerHTML =
-        "Dang tim camera...";
+    if (!matKhau) {
 
+        hienLoiDangNhap(
+            "Hay nhap mat khau."
+        );
 
-    Html5Qrcode.getCameras()
+        return;
 
-    .then(function(cameras) {
-
-        if (!cameras || cameras.length === 0) {
-
-            document.getElementById("trangThai").innerHTML =
-                "Khong tim thay camera.";
-
-            return;
-        }
+    }
 
 
-        let cameraId = cameras[0].id;
+    hienLoiDangNhap(
+        "Dang kiem tra..."
+    );
 
 
-        /* Uu tien camera sau */
-
-        for (let i = 0; i < cameras.length; i++) {
-
-            let ten =
-                (cameras[i].label || "").toLowerCase();
-
+    goiJSONP(
+        "dangNhap",
+        {
+            maNV: maNV,
+            matKhau: matKhau
+        },
+        function(kq) {
 
             if (
-                ten.includes("back") ||
-                ten.includes("rear") ||
-                ten.includes("environment") ||
-                ten.includes("sau")
+                kq &&
+                kq.ok
             ) {
 
-                cameraId = cameras[i].id;
+                maNVDangNhap =
+                    kq.maNV;
 
-                break;
+                tenNVDangNhap =
+                    kq.tenNV;
+
+
+                document
+                    .getElementById(
+                        "hienMaNV"
+                    )
+                    .innerText =
+                    maNVDangNhap;
+
+
+                document
+                    .getElementById(
+                        "hienTenNV"
+                    )
+                    .innerText =
+                    tenNVDangNhap;
+
+
+                document
+                    .getElementById(
+                        "manHinhDangNhap"
+                    )
+                    .style.display =
+                    "none";
+
+
+                document
+                    .getElementById(
+                        "manHinhChinh"
+                    )
+                    .style.display =
+                    "block";
+
+
+                hienLoiDangNhap("");
+
+            } else {
+
+                hienLoiDangNhap(
+                    kq && kq.msg
+                        ? kq.msg
+                        : "Dang nhap that bai."
+                );
+
             }
+
         }
+    );
+
+}
 
 
-        html5QrCode =
-            new Html5Qrcode("reader");
+// =======================================================
+// JSONP
+// =======================================================
+
+function goiJSONP(
+    action,
+    thamSo,
+    callback
+) {
+
+    const tenCallback =
+        "callback_" +
+        Date.now() +
+        "_" +
+        Math.floor(
+            Math.random() * 10000
+        );
 
 
-        const cauHinh = {
+    thamSo.action =
+        action;
 
-            fps: 10,
+    thamSo.callback =
+        tenCallback;
 
-            qrbox: {
-                width: 250,
-                height: 250
+
+    window[tenCallback] =
+        function(data) {
+
+            try {
+
+                callback(data);
+
+            } finally {
+
+                delete window[
+                    tenCallback
+                ];
+
+                if (
+                    script &&
+                    script.parentNode
+                ) {
+
+                    script.parentNode
+                        .removeChild(
+                            script
+                        );
+
+                }
+
             }
 
         };
 
 
-        html5QrCode.start(
-
-            cameraId,
-
-            cauHinh,
-
-
-            function(maQR) {
-
-                xuLyQR(maQR);
-
-            },
+    const script =
+        document.createElement(
+            "script"
+        );
 
 
-            function(loi) {
-
-                /*
-
-                   Bo qua loi quet tam thoi.
-
-                */
-
-            }
-
-        )
-
-        .then(function() {
-
-            dangChay = true;
-
-            document.getElementById("trangThai").innerHTML =
-                "Camera dang hoat dong - dua QR vao khung";
-
-        })
+    let url =
+        URL_APPS_SCRIPT +
+        "?";
 
 
-        .catch(function(err) {
-
-            dangChay = false;
-
-            document.getElementById("trangThai").innerHTML =
-                "Khong mo duoc camera";
-
-            document.getElementById("ketQua").innerHTML =
-                String(err);
-
-        });
-
-    })
+    const danhSach =
+        [];
 
 
-    .catch(function(err) {
+    for (
+        const key in thamSo
+    ) {
 
-        document.getElementById("trangThai").innerHTML =
-            "Khong duoc phep truy cap camera";
+        danhSach.push(
+            encodeURIComponent(key) +
+            "=" +
+            encodeURIComponent(
+                thamSo[key]
+            )
+        );
 
-        document.getElementById("ketQua").innerHTML =
-            String(err);
-
-    });
-
-}
-
-
-/* =====================================================
-   XU LY QR
-   ===================================================== */
-
-function xuLyQR(maQR) {
-
-    if (daQuet) {
-        return;
     }
 
-    daQuet = true;
+
+    url += danhSach.join("&");
 
 
-    maQR = String(maQR).trim();
+    script.src = url;
 
-maQRHienTai = maQR;
+    script.onerror =
+        function() {
 
-/* Kêu bip ngay khi quet thanh cong */
+            callback({
+                ok: false,
+                msg: "Khong ket noi duoc may chu."
+            });
 
-bipQuetQR();
-
-
-    document.getElementById("maQR").innerText =
-        maQR;
-
-
-    document.getElementById("trangThai").innerHTML =
-        "Da quet QR - dang tu dong chup anh...";
+        };
 
 
-    document.getElementById("ketQua").innerHTML =
-        "Ma QR: " + maQR;
-
-
-    /*
-       Cho camera on dinh mot chut
-       roi chup khung hinh hien tai.
-    */
-
-    setTimeout(function() {
-
-        chupAnhTuCamera(function(anh) {
-
-            if (anh) {
-
-    anhBase64 = anh;
-
-    /* Kêu bip khi chup anh xong */
-
-    bipChupAnh();
-                document.getElementById("anhChup").src =
-                    anh;
-
-                document.getElementById("anhChup").style.display =
-                    "block";
-
-                document.getElementById("nhanAnh").style.display =
-                    "block";
-
-
-                document.getElementById("trangThai").innerHTML =
-                    "Da quet QR va chup anh thanh cong";
-
-
-                document.getElementById("ketQua").innerHTML =
-                    "Ma QR: " + maQR +
-                    "<br>Anh da duoc chup.";
-
-            }
-
-            else {
-
-                document.getElementById("trangThai").innerHTML =
-                    "Quet QR thanh cong nhung khong chup duoc anh";
-
-            }
-
-
-            dungCamera();
-
-        });
-
-    }, 300);
+    document.body.appendChild(
+        script
+    );
 
 }
 
 
-/* =====================================================
-   CHUP ANH TU KHUNG CAMERA
-   ===================================================== */
+// =======================================================
+// HIEN LOI DANG NHAP
+// =======================================================
 
-function chupAnhTuCamera(callback) {
+function hienLoiDangNhap(
+    noiDung
+) {
 
-    const reader =
-        document.getElementById("reader");
+    const o =
+        document.getElementById(
+            "baoLoiDangNhap"
+        );
+
+    o.innerText =
+        noiDung;
+
+    o.style.color =
+        "red";
+
+    o.style.padding =
+        "8px";
+
+}
 
 
-    const video =
-        reader.querySelector("video");
+// =======================================================
+// BAT DAU QUET
+// =======================================================
+
+function batDauQuet(
+    nghiepVu
+) {
+
+    nghiepVuHienTai =
+        nghiepVu;
 
 
-    if (!video) {
+    document
+        .getElementById(
+            "manHinhChinh"
+        )
+        .style.display =
+        "none";
 
-        callback("");
 
-        return;
+    document
+        .getElementById(
+            "manHinhQuet"
+        )
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById(
+            "thongTinDon"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "anhPreview"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "btnChupLai"
+        )
+        .classList.add(
+            "an"
+        );
+
+
+    document
+        .getElementById(
+            "phanGiaoHang"
+        )
+        .classList.add(
+            "an"
+        );
+
+
+    document
+        .getElementById(
+            "phanHangHoan"
+        )
+        .classList.add(
+            "an"
+        );
+
+
+    document
+        .getElementById(
+            "ketQuaQR"
+        )
+        .innerText =
+        "Chua quet QR";
+
+
+    if (
+        nghiepVu ===
+        "nhanHang"
+    ) {
+
+        document
+            .getElementById(
+                "tenNghiepVu"
+            )
+            .innerText =
+            "NHAN HANG TU KHO";
+
     }
 
 
     if (
-        video.readyState <
-        HTMLMediaElement.HAVE_CURRENT_DATA
+        nghiepVu ===
+        "giaoHang"
     ) {
 
-        setTimeout(function() {
+        document
+            .getElementById(
+                "tenNghiepVu"
+            )
+            .innerText =
+            "GIAO HANG CHO KHACH";
 
-            chupAnhTuCamera(callback);
-
-        }, 300);
-
-        return;
     }
 
 
-    const canvas =
-        document.createElement("canvas");
+    if (
+        nghiepVu ===
+        "hangHoan"
+    ) {
 
+        document
+            .getElementById(
+                "tenNghiepVu"
+            )
+            .innerText =
+            "HANG HOAN";
 
-    let width =
-        video.videoWidth;
-
-    let height =
-        video.videoHeight;
-
-
-    if (!width || !height) {
-
-        callback("");
-
-        return;
     }
 
 
-    /*
-       Gioi han kich thuoc anh
-       de gui ve sau nay nhanh hon.
-    */
+    if (
+        nghiepVu ===
+        "nhapLaiKho"
+    ) {
 
-    const maxWidth = 1280;
+        document
+            .getElementById(
+                "tenNghiepVu"
+            )
+            .innerText =
+            "NHAP LAI KHO";
 
-
-    if (width > maxWidth) {
-
-        const tyLe =
-            maxWidth / width;
-
-        width = maxWidth;
-
-        height =
-            Math.round(height * tyLe);
     }
 
 
-    canvas.width = width;
-
-    canvas.height = height;
-
-
-    const ctx =
-        canvas.getContext("2d");
-
-
-    ctx.drawImage(
-        video,
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    anhBase64 =
-        canvas.toDataURL(
-            "image/jpeg",
-            0.75
-        );
-
-
-    callback(anhBase64);
-}
-
-
-/* =====================================================
-   DUNG CAMERA
-   ===================================================== */
-
-function dungCamera() {
-
-    if (!html5QrCode || !dangChay) {
-        return;
-    }
-
-
-    html5QrCode.stop()
-
-    .then(function() {
-
-        try {
-
-            html5QrCode.clear();
-
-        }
-
-        catch(e) {
-
-            console.log(e);
-
-        }
-
-
-        dangChay = false;
-
-    })
-
-
-    .catch(function(err) {
-
-        console.log(err);
-
-        dangChay = false;
-
-    });
+    khoiDongCamera();
 
 }
 
 
-/* =====================================================
-   CHUP LAI
-   ===================================================== */
+// =======================================================
+// KHOI DONG CAMERA
+// =======================================================
 
-function chupLai() {
+async function khoiDongCamera() {
 
-    if (!maQRHienTai) {
-
-        alert("Chua co ma QR");
-
-        return;
-    }
+    dangXuLy =
+        false;
 
 
-    document.getElementById("trangThai").innerHTML =
-        "Dang mo camera de chup lai...";
+    document
+        .getElementById(
+            "trangThai"
+        )
+        .innerText =
+        "Dang tim camera sau...";
 
 
-    daQuet = true;
+    try {
 
-
-    moCameraChoChupLai();
-
-}
-
-
-/* =====================================================
-   MO CAMERA CHO CHUP LAI
-   ===================================================== */
-
-function moCameraChoChupLai() {
-
-    if (dangChay) {
-        return;
-    }
-
-
-    Html5Qrcode.getCameras()
-
-    .then(function(cameras) {
-
-        if (!cameras || cameras.length === 0) {
-
-            alert("Khong tim thay camera");
-
-            return;
-        }
-
-
-        let cameraId =
-            cameras[0].id;
-
-
-        for (
-            let i = 0;
-            i < cameras.length;
-            i++
+        if (
+            !html5QrCode
         ) {
 
-            let ten =
-                (cameras[i].label || "").toLowerCase();
+            html5QrCode =
+                new Html5Qrcode(
+                    "reader"
+                );
 
-
-            if (
-                ten.includes("back") ||
-                ten.includes("rear") ||
-                ten.includes("environment") ||
-                ten.includes("sau")
-            ) {
-
-                cameraId =
-                    cameras[i].id;
-
-                break;
-            }
         }
 
 
-        html5QrCode =
-            new Html5Qrcode("reader");
+        const cameras =
+            await Html5Qrcode
+                .getCameras();
 
 
-        html5QrCode.start(
+        if (
+            !cameras ||
+            cameras.length === 0
+        ) {
 
-            cameraId,
+            throw new Error(
+                "Khong tim thay camera."
+            );
+
+        }
+
+
+        let cameraSau =
+            cameras.find(
+                camera =>
+                    /back|rear|environment/i
+                    .test(
+                        camera.label
+                    )
+            );
+
+
+        if (!cameraSau) {
+
+            cameraSau =
+                cameras[
+                    cameras.length - 1
+                ];
+
+        }
+
+
+        await html5QrCode.start(
+
+            cameraSau.id,
 
             {
                 fps: 10,
 
-                qrbox: {
-                    width: 250,
-                    height: 250
-                }
+                qrbox:
+                    function(
+                        viewfinderWidth,
+                        viewfinderHeight
+                    ) {
+
+                        const kichThuoc =
+                            Math.min(
+                                viewfinderWidth,
+                                viewfinderHeight
+                            ) * 0.70;
+
+                        return {
+                            width:
+                                kichThuoc,
+                            height:
+                                kichThuoc
+                        };
+
+                    },
+
+                aspectRatio: 1.0
             },
 
-            function() {
-
-                /*
-                   Khong xu ly QR.
-                   Chi dung camera de chup anh.
-                */
-
-            },
+            khiQuetThanhCong,
 
             function() {}
 
-        )
-
-        .then(function() {
-
-            dangChay = true;
+        );
 
 
-            document.getElementById("trangThai").innerHTML =
-                "Camera dang hoat dong - dua may vao kien hang";
+        document
+            .getElementById(
+                "trangThai"
+            )
+            .innerText =
+            "Camera san sang - Dua QR vao khung";
 
 
-            setTimeout(function() {
+    } catch (error) {
 
-                chupAnhTuCamera(function(anh) {
+        console.error(error);
 
-                    if (anh) {
+        document
+            .getElementById(
+                "trangThai"
+            )
+            .innerText =
+            "LOI CAMERA: " +
+            error.message;
 
-                        anhBase64 = anh;
-
-                        document.getElementById("anhChup").src =
-                            anh;
-
-                        document.getElementById("anhChup").style.display =
-                            "block";
-
-
-                        document.getElementById("trangThai").innerHTML =
-                            "Da chup lai anh";
-
-                    }
-
-
-                    dungCamera();
-
-                });
-
-            }, 1000);
-
-        })
-
-        .catch(function(err) {
-
-            document.getElementById("trangThai").innerHTML =
-                "Khong mo duoc camera";
-
-            console.log(err);
-
-        });
-
-    })
-
-    .catch(function(err) {
-
-        console.log(err);
-
-    });
+    }
 
 }
 
 
-/* =====================================================
-   QUET QR MOI
-   ===================================================== */
+// =======================================================
+// QUET QR THANH CONG
+// =======================================================
 
-function quetMoi() {
+async function khiQuetThanhCong(
+    maQR
+) {
 
-    maQRHienTai = "";
+    if (dangXuLy) {
 
-    anhBase64 = "";
+        return;
 
-    daQuet = false;
-
-
-    document.getElementById("maQR").innerText =
-        "Chua quet";
+    }
 
 
-    document.getElementById("anhChup").src =
+    dangXuLy =
+        true;
+
+
+    maQR =
+        String(maQR)
+        .trim();
+
+
+    maQRHienTai =
+        maQR;
+
+
+    // BIP
+    bipQuetQR();
+
+
+    document
+        .getElementById(
+            "ketQuaQR"
+        )
+        .innerText =
+        "MA QR: " +
+        maQR;
+
+
+    document
+        .getElementById(
+            "trangThai"
+        )
+        .innerText =
+        "Da quet QR - Dang tim don...";
+
+
+    // DUNG CAMERA
+    try {
+
+        await html5QrCode.stop();
+
+    } catch (e) {
+
+        console.log(e);
+
+    }
+
+
+    // TIM DON
+    goiJSONP(
+        "timDon",
+        {
+            maQR: maQR
+        },
+        function(kq) {
+
+            if (
+                !kq ||
+                !kq.ok
+            ) {
+
+                document
+                    .getElementById(
+                        "trangThai"
+                    )
+                    .innerText =
+                    kq && kq.msg
+                        ? kq.msg
+                        : "Khong tim thay don.";
+
+                dangXuLy =
+                    false;
+
+                return;
+
+            }
+
+
+            donHienTai =
+                kq;
+
+
+            hienThiDon(
+                kq
+            );
+
+
+            document
+                .getElementById(
+                    "trangThai"
+                )
+                .innerText =
+                "Tim thay don - Dang tu dong chup anh...";
+
+
+            setTimeout(
+                function() {
+
+                    chupAnhTuCamera();
+
+                },
+                500
+            );
+
+        }
+    );
+
+}
+
+
+// =======================================================
+// HIEN THI DON
+// =======================================================
+
+function hienThiDon(
+    don
+) {
+
+    document
+        .getElementById(
+            "thongTinDon"
+        )
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById(
+            "ttMaQR"
+        )
+        .innerText =
+        don.maQR || "";
+
+
+    document
+        .getElementById(
+            "ttMaDon"
+        )
+        .innerText =
+        don.maDon || "";
+
+
+    document
+        .getElementById(
+            "ttKhachHang"
+        )
+        .innerText =
+        don.khachHang || "";
+
+
+    document
+        .getElementById(
+            "ttSoDienThoai"
+        )
+        .innerText =
+        don.soDienThoai || "";
+
+
+    document
+        .getElementById(
+            "ttDiaChi"
+        )
+        .innerText =
+        don.diaChi || "";
+
+
+    document
+        .getElementById(
+            "ttTenHang"
+        )
+        .innerText =
+        don.tenHang || "";
+
+
+    document
+        .getElementById(
+            "ttSoLuong"
+        )
+        .innerText =
+        don.soLuong || "";
+
+
+    document
+        .getElementById(
+            "ttTienHang"
+        )
+        .innerText =
+        dinhDangTien(
+            don.tienHang
+        );
+
+
+    document
+        .getElementById(
+            "ttTienShip"
+        )
+        .innerText =
+        dinhDangTien(
+            don.tienShip
+        );
+
+
+    document
+        .getElementById(
+            "ttTongTien"
+        )
+        .innerText =
+        dinhDangTien(
+            don.tongTien
+        );
+
+
+    document
+        .getElementById(
+            "ttTonKho"
+        )
+        .innerText =
+        don.tonKho || "";
+
+
+    document
+        .getElementById(
+            "ttTrangThai"
+        )
+        .innerText =
+        don.trangThai || "";
+
+
+    if (
+        nghiepVuHienTai ===
+        "giaoHang"
+    ) {
+
+        document
+            .getElementById(
+                "phanGiaoHang"
+            )
+            .classList.remove(
+                "an"
+            );
+
+    }
+
+
+    if (
+        nghiepVuHienTai ===
+        "hangHoan"
+    ) {
+
+        document
+            .getElementById(
+                "phanHangHoan"
+            )
+            .classList.remove(
+                "an"
+            );
+
+    }
+
+}
+
+
+// =======================================================
+// DINH DANG TIEN
+// =======================================================
+
+function dinhDangTien(
+    soTien
+) {
+
+    const so =
+        Number(soTien) || 0;
+
+    return so.toLocaleString(
+        "vi-VN"
+    ) + " d";
+
+
+}
+
+
+// =======================================================
+// CHUP ANH
+// =======================================================
+
+function chupAnhTuCamera() {
+
+    try {
+
+        const reader =
+            document.getElementById(
+                "reader"
+            );
+
+
+        const video =
+            reader.querySelector(
+                "video"
+            );
+
+
+        if (!video) {
+
+            throw new Error(
+                "Khong tim thay video camera."
+            );
+
+        }
+
+
+        const canvas =
+            document.createElement(
+                "canvas"
+            );
+
+
+        let chieuRong =
+            video.videoWidth;
+
+        let chieuCao =
+            video.videoHeight;
+
+
+        const maxWidth =
+            1000;
+
+
+        if (
+            chieuRong >
+            maxWidth
+        ) {
+
+            const tyLe =
+                maxWidth /
+                chieuRong;
+
+            chieuRong =
+                maxWidth;
+
+            chieuCao =
+                chieuCao * tyLe;
+
+        }
+
+
+        canvas.width =
+            chieuRong;
+
+        canvas.height =
+            chieuCao;
+
+
+        const ctx =
+            canvas.getContext(
+                "2d"
+            );
+
+
+        ctx.drawImage(
+            video,
+            0,
+            0,
+            chieuRong,
+            chieuCao
+        );
+
+
+        const anh =
+            canvas.toDataURL(
+                "image/jpeg",
+                0.70
+            );
+
+
+        if (!anh) {
+
+            throw new Error(
+                "Khong tao duoc anh."
+            );
+
+        }
+
+
+        anhBase64 =
+            anh;
+
+
+        // BIP CHUP ANH
+        bipChupAnh();
+
+
+        const img =
+            document.getElementById(
+                "anhPreview"
+            );
+
+
+        img.src =
+            anhBase64;
+
+
+        img.style.display =
+            "block";
+
+
+        document
+            .getElementById(
+                "btnChupLai"
+            )
+            .classList.remove(
+                "an"
+            );
+
+
+        document
+            .getElementById(
+                "trangThai"
+            )
+            .innerText =
+            "Da chup anh thanh cong.";
+
+    } catch (error) {
+
+        console.error(error);
+
+        document
+            .getElementById(
+                "trangThai"
+            )
+            .innerText =
+            "LOI CHUP ANH: " +
+            error.message;
+
+        dangXuLy =
+            false;
+
+    }
+
+}
+
+
+// =======================================================
+// CHUP LAI
+// =======================================================
+
+async function chupLaiAnh() {
+
+    dangXuLy =
+        false;
+
+
+    document
+        .getElementById(
+            "anhPreview"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "btnChupLai"
+        )
+        .classList.add(
+            "an"
+        );
+
+
+    document
+        .getElementById(
+            "trangThai"
+        )
+        .innerText =
+        "Dang mo camera...";
+
+
+    try {
+
+        await html5QrCode.start(
+
+            {
+                facingMode:
+                    "environment"
+            },
+
+            {
+                fps: 10,
+
+                qrbox:
+                    function(
+                        viewfinderWidth,
+                        viewfinderHeight
+                    ) {
+
+                        const kichThuoc =
+                            Math.min(
+                                viewfinderWidth,
+                                viewfinderHeight
+                            ) * 0.70;
+
+                        return {
+                            width:
+                                kichThuoc,
+                            height:
+                                kichThuoc
+                        };
+
+                    },
+
+                aspectRatio: 1.0
+            },
+
+            function() {},
+
+            function() {}
+
+        );
+
+
+        // Khi bam chup lai,
+        // camera mo ra nhung khong doi QR.
+        // Tao nut chup lai bang cach lay frame sau 1 giay.
+
+        setTimeout(
+            function() {
+
+                chupAnhTuCamera();
+
+            },
+            1000
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        document
+            .getElementById(
+                "trangThai"
+            )
+            .innerText =
+            "LOI CAMERA: " +
+            error.message;
+
+    }
+
+}
+
+
+// =======================================================
+// THUC HIEN NGHIEP VU
+// =======================================================
+
+function thucHienNghiepVu() {
+
+    if (!maQRHienTai) {
+
+        alert(
+            "Chua co ma QR."
+        );
+
+        return;
+
+    }
+
+
+    if (!maNVDangNhap) {
+
+        alert(
+            "Chua dang nhap."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        nghiepVuHienTai !==
+        "nhapLaiKho" &&
+        !anhBase64
+    ) {
+
+        alert(
+            "Chua co anh kien hang."
+        );
+
+        return;
+
+    }
+
+
+    const btn =
+        document.getElementById(
+            "btnThucHien"
+        );
+
+
+    btn.disabled =
+        true;
+
+
+    btn.innerText =
+        "DANG GUI DU LIEU...";
+
+
+    // -----------------------------------------------
+    // NHAN HANG
+    // -----------------------------------------------
+
+    if (
+        nghiepVuHienTai ===
+        "nhanHang"
+    ) {
+
+        guiFormPOST(
+            "nhanHang",
+            {
+                maQR:
+                    maQRHienTai,
+
+                maNV:
+                    maNVDangNhap,
+
+                anhBase64:
+                    anhBase64
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    // -----------------------------------------------
+    // GIAO HANG
+    // -----------------------------------------------
+
+    if (
+        nghiepVuHienTai ===
+        "giaoHang"
+    ) {
+
+        const thanhToanHang =
+            document
+            .getElementById(
+                "thanhToanHang"
+            )
+            .value;
+
+
+        const phuongThucHang =
+            document
+            .getElementById(
+                "phuongThucHang"
+            )
+            .value;
+
+
+        const thanhToanShip =
+            document
+            .getElementById(
+                "thanhToanShip"
+            )
+            .value;
+
+
+        const phuongThucShip =
+            document
+            .getElementById(
+                "phuongThucShip"
+            )
+            .value;
+
+
+        if (
+            !thanhToanHang ||
+            !phuongThucHang ||
+            !thanhToanShip ||
+            !phuongThucShip
+        ) {
+
+            alert(
+                "Hay chon day du thong tin thanh toan."
+            );
+
+
+            btn.disabled =
+                false;
+
+            btn.innerText =
+                "THUC HIEN";
+
+            return;
+
+        }
+
+
+        guiFormPOST(
+            "giaoHang",
+            {
+                maQR:
+                    maQRHienTai,
+
+                maNV:
+                    maNVDangNhap,
+
+                thanhToanHang:
+                    thanhToanHang,
+
+                phuongThucHang:
+                    phuongThucHang,
+
+                thanhToanShip:
+                    thanhToanShip,
+
+                phuongThucShip:
+                    phuongThucShip,
+
+                anhBase64:
+                    anhBase64
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    // -----------------------------------------------
+    // HANG HOAN
+    // -----------------------------------------------
+
+    if (
+        nghiepVuHienTai ===
+        "hangHoan"
+    ) {
+
+        const lyDo =
+            document
+            .getElementById(
+                "lyDoHoan"
+            )
+            .value;
+
+
+        if (!lyDo) {
+
+            alert(
+                "Hay chon ly do hang hoan."
+            );
+
+
+            btn.disabled =
+                false;
+
+            btn.innerText =
+                "THUC HIEN";
+
+            return;
+
+        }
+
+
+        guiFormPOST(
+            "hangHoan",
+            {
+                maQR:
+                    maQRHienTai,
+
+                maNV:
+                    maNVDangNhap,
+
+                lyDo:
+                    lyDo,
+
+                anhBase64:
+                    anhBase64
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    // -----------------------------------------------
+    // NHAP LAI KHO
+    // -----------------------------------------------
+
+    if (
+        nghiepVuHienTai ===
+        "nhapLaiKho"
+    ) {
+
+        guiFormPOST(
+            "nhapLaiKho",
+            {
+                maQR:
+                    maQRHienTai,
+
+                maNV:
+                    maNVDangNhap
+            }
+        );
+
+    }
+
+}
+
+
+// =======================================================
+// GUI FORM POST
+// KHONG DUNG FETCH
+// =======================================================
+
+function guiFormPOST(
+    action,
+    duLieu
+) {
+
+    const iframe =
+        document.createElement(
+            "iframe"
+        );
+
+
+    iframe.name =
+        "iframeGuiDuLieu_" +
+        Date.now();
+
+
+    iframe.style.display =
+        "none";
+
+
+    document.body.appendChild(
+        iframe
+    );
+
+
+    const form =
+        document.createElement(
+            "form"
+        );
+
+
+    form.method =
+        "POST";
+
+
+    form.action =
+        URL_APPS_SCRIPT;
+
+
+    form.target =
+        iframe.name;
+
+
+    form.style.display =
+        "none";
+
+
+    // ACTION
+    themInput(
+        form,
+        "action",
+        action
+    );
+
+
+    // DU LIEU
+    for (
+        const key in duLieu
+    ) {
+
+        themInput(
+            form,
+            key,
+            duLieu[key]
+        );
+
+    }
+
+
+    document.body.appendChild(
+        form
+    );
+
+
+    form.submit();
+
+
+    // Thong bao cho nguoi dung
+    setTimeout(
+        function() {
+
+            document
+                .getElementById(
+                    "trangThai"
+                )
+                .innerText =
+                "Da gui yeu cau len may chu.";
+
+
+            alert(
+                "Da gui yeu cau. Vui long kiem tra Google Sheets."
+            );
+
+
+            btnVeLai();
+
+        },
+        1800
+    );
+
+}
+
+
+// =======================================================
+// THEM INPUT
+// =======================================================
+
+function themInput(
+    form,
+    ten,
+    giaTri
+) {
+
+    const input =
+        document.createElement(
+            "input"
+        );
+
+    input.type =
+        "hidden";
+
+    input.name =
+        ten;
+
+    input.value =
+        giaTri || "";
+
+    form.appendChild(
+        input
+    );
+
+}
+
+
+// =======================================================
+// QUAY LAI MAN HINH CHINH
+// =======================================================
+
+function veManHinhChinh() {
+
+    dungCamera();
+
+    document
+        .getElementById(
+            "manHinhQuet"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "manHinhChinh"
+        )
+        .style.display =
+        "block";
+
+
+    resetDuLieu();
+
+}
+
+
+// =======================================================
+// DUNG CAMERA
+// =======================================================
+
+async function dungCamera() {
+
+    try {
+
+        if (
+            html5QrCode
+        ) {
+
+            const state =
+                html5QrCode
+                    .getState();
+
+            if (
+                state ===
+                2 ||
+                state ===
+                3
+            ) {
+
+                await html5QrCode.stop();
+
+            }
+
+        }
+
+    } catch (e) {
+
+        console.log(e);
+
+    }
+
+}
+
+
+// =======================================================
+// RESET
+// =======================================================
+
+function resetDuLieu() {
+
+    maQRHienTai =
         "";
 
-    document.getElementById("anhChup").style.display =
+    anhBase64 =
+        "";
+
+    donHienTai =
+        null;
+
+    dangXuLy =
+        false;
+
+
+    document
+        .getElementById(
+            "anhPreview"
+        )
+        .src =
+        "";
+
+
+    document
+        .getElementById(
+            "anhPreview"
+        )
+        .style.display =
         "none";
 
 
-    document.getElementById("nhanAnh").style.display =
+    document
+        .getElementById(
+            "btnChupLai"
+        )
+        .classList.add(
+            "an"
+        );
+
+
+    document
+        .getElementById(
+            "phanGiaoHang"
+        )
+        .classList.add(
+            "an"
+        );
+
+
+    document
+        .getElementById(
+            "phanHangHoan"
+        )
+        .classList.add(
+            "an"
+        );
+
+
+    const btn =
+        document.getElementById(
+            "btnThucHien"
+        );
+
+
+    btn.disabled =
+        false;
+
+    btn.innerText =
+        "THUC HIEN";
+
+}
+
+
+// =======================================================
+// NUT VE LAI SAU KHI GUI
+// =======================================================
+
+function btnVeLai() {
+
+    resetDuLieu();
+
+
+    document
+        .getElementById(
+            "manHinhQuet"
+        )
+        .style.display =
         "none";
 
 
-    document.getElementById("ketQua").innerHTML =
-        "Hay dua ma QR vao khung camera.";
+    document
+        .getElementById(
+            "manHinhChinh"
+        )
+        .style.display =
+        "block";
+
+}
 
 
-    document.getElementById("trangThai").innerHTML =
-        "San sang quet QR";
+// =======================================================
+// DANG XUAT
+// =======================================================
+
+function dangXuat() {
+
+    dungCamera();
 
 
-    moCamera();
+    maNVDangNhap =
+        "";
+
+    tenNVDangNhap =
+        "";
+
+
+    document
+        .getElementById(
+            "maNV"
+        )
+        .value =
+        "";
+
+    document
+        .getElementById(
+            "matKhau"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "manHinhChinh"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "manHinhQuet"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "manHinhDangNhap"
+        )
+        .style.display =
+        "block";
 
 }
 
 </script>
 
 </body>
+
 </html>
