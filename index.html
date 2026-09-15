@@ -188,6 +188,90 @@ button.do {
 
 
 <script>
+/* =====================================================
+   TAO TIENG BIP
+   ===================================================== */
+
+let audioContext = null;
+
+function taoTiengBip(tanSo, thoiGian, amLuong) {
+
+    try {
+
+        if (!audioContext) {
+
+            audioContext =
+                new (window.AudioContext ||
+                     window.webkitAudioContext)();
+
+        }
+
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+        oscillator.type = "square";
+
+        oscillator.frequency.value =
+            tanSo;
+
+        gain.gain.value =
+            amLuong;
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime +
+            thoiGian
+        );
+
+    }
+
+    catch(e) {
+
+        console.log("Khong phat duoc tieng bip:", e);
+
+    }
+}
+
+
+/* BIP KHI QUET QR */
+
+function bipQuetQR() {
+
+    taoTiengBip(
+        1000,
+        0.35,
+        0.8
+    );
+
+}
+
+
+/* BIP KHI CHUP ANH XONG */
+
+function bipChupAnh() {
+
+    taoTiengBip(
+        1500,
+        0.20,
+        0.8
+    );
+
+}
+
 
 let html5QrCode = null;
 
@@ -349,7 +433,11 @@ function xuLyQR(maQR) {
 
     maQR = String(maQR).trim();
 
-    maQRHienTai = maQR;
+maQRHienTai = maQR;
+
+/* Kêu bip ngay khi quet thanh cong */
+
+bipQuetQR();
 
 
     document.getElementById("maQR").innerText =
@@ -375,8 +463,11 @@ function xuLyQR(maQR) {
 
             if (anh) {
 
-                anhBase64 = anh;
+    anhBase64 = anh;
 
+    /* Kêu bip khi chup anh xong */
+
+    bipChupAnh();
                 document.getElementById("anhChup").src =
                     anh;
 
