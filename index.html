@@ -570,8 +570,18 @@ function timDonTrenServer(maQR) {
             "nhanKetQuaQR_" + Date.now();
 
         let script = null;
-
         let daXuLy = false;
+
+        const url =
+            URL_APPS_SCRIPT +
+            "?action=timDon" +
+            "&maQR=" +
+            encodeURIComponent(maQR) +
+            "&callback=" +
+            encodeURIComponent(tenCallback);
+
+        console.log("URL JSONP:");
+        console.log(url);
 
         function donDep() {
 
@@ -617,7 +627,7 @@ function timDonTrenServer(maQR) {
                 resolve(
                     data || {
                         ok: false,
-                        msg: "Khong co du lieu tra ve"
+                        msg: "Khong co du lieu"
                     }
                 );
 
@@ -628,13 +638,15 @@ function timDonTrenServer(maQR) {
         script =
             document.createElement("script");
 
-        script.src =
-            URL_APPS_SCRIPT +
-            "?action=timDon" +
-            "&maQR=" +
-            encodeURIComponent(maQR) +
-            "&callback=" +
-            encodeURIComponent(tenCallback);
+        script.src = url;
+
+        script.onload = function() {
+
+            console.log(
+                "JSONP script da tai xong"
+            );
+
+        };
 
         script.onerror = function() {
 
@@ -646,16 +658,22 @@ function timDonTrenServer(maQR) {
 
             donDep();
 
+            console.error(
+                "JSONP ERROR:",
+                url
+            );
+
             document.getElementById("thongBao").innerText =
-                "Loi ket noi Apps Script";
+                "Loi JSONP Apps Script";
 
             alert(
-                "Khong ket noi duoc Apps Script"
+                "Apps Script khong tra ve JSONP.\n\n" +
+                "Ma QR: " + maQR
             );
 
             reject(
                 new Error(
-                    "Khong tai duoc Apps Script"
+                    "JSONP Apps Script error"
                 )
             );
 
@@ -664,7 +682,9 @@ function timDonTrenServer(maQR) {
         document.body.appendChild(script);
 
     });
+
 }
+
 
 /* =====================================================
    NHAN HANG
