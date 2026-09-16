@@ -1,91 +1,74 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Giao Nhan Hang - V5.2</title>
+<title>Giao Nhan QR</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-body{
-    font-family:Arial,sans-serif;
-    margin:0;
-    padding:15px;
-    background:#f2f2f2;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 15px;
+    text-align: center;
+    background: #f2f2f2;
 }
 
-h2{
-    text-align:center;
-    margin-top:5px;
+h2 {
+    margin-top: 5px;
 }
 
-button{
-    width:100%;
-    padding:14px;
-    margin-top:10px;
-    font-size:18px;
-    border:0;
-    border-radius:8px;
-    background:#1976d2;
-    color:white;
+#reader {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    background: white;
 }
 
-button:active{
-    opacity:0.7;
+#anhXem {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 15px;
+    display: none;
 }
 
-#reader{
-    width:100%;
-    max-width:500px;
-    margin:15px auto;
-    background:#000;
-    border-radius:8px;
-    overflow:hidden;
+button {
+    width: 90%;
+    max-width: 400px;
+    padding: 14px;
+    margin: 8px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    background: #333;
+    color: white;
 }
 
-#trangThai{
-    text-align:center;
-    font-size:18px;
-    font-weight:bold;
-    margin:15px 0;
-}
-
-#maQR{
-    text-align:center;
-    font-size:22px;
-    font-weight:bold;
-    word-break:break-all;
-}
-
-#anhChup{
-    width:100%;
-    max-width:500px;
-    display:none;
-    margin:15px auto;
-    border-radius:8px;
+#thongBao {
+    margin: 10px;
+    font-size: 18px;
+    font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 
-<h2>GIAO NHAN HANG</h2>
+<h2>GIAO NHAN QR</h2>
 
-<div id="trangThai">
-    San sang mo camera
+<div id="thongBao">
+    Dang khoi dong camera...
 </div>
-
-<div id="maQR"></div>
 
 <div id="reader"></div>
 
-<img id="anhChup">
+<img id="anhXem">
 
-<button onclick="moCamera()">
-    MO CAMERA
-</button>
+<br>
 
 <button onclick="chupLai()">
     CHUP LAI
@@ -95,14 +78,22 @@ button:active{
     QUET QR MOI
 </button>
 
-
 <script>
 
-/* =====================================================
-   TIENG BIP
-   ===================================================== */
+let html5QrCode = null;
+
+let daQuet = false;
+
+let maQRHienTai = "";
+
+let anhBase64 = "";
 
 let audioContext = null;
+
+
+/* =========================
+   TAO TIENG BIP
+========================= */
 
 function taoTiengBip(tanSo, thoiGian, amLuong) {
 
@@ -111,13 +102,17 @@ function taoTiengBip(tanSo, thoiGian, amLuong) {
         if (!audioContext) {
 
             audioContext =
-                new (window.AudioContext ||
-                     window.webkitAudioContext)();
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
 
         }
 
         if (audioContext.state === "suspended") {
+
             audioContext.resume();
+
         }
 
         const oscillator =
@@ -154,9 +149,7 @@ function taoTiengBip(tanSo, thoiGian, amLuong) {
 }
 
 
-/* =====================================================
-   BIP QUET QR
-   ===================================================== */
+/* BIP KHI QUET QR */
 
 function bipQuetQR() {
 
@@ -169,9 +162,7 @@ function bipQuetQR() {
 }
 
 
-/* =====================================================
-   BIP CHUP ANH
-   ===================================================== */
+/* BIP KHI CHUP ANH */
 
 function bipChupAnh() {
 
@@ -184,194 +175,122 @@ function bipChupAnh() {
 }
 
 
-/* =====================================================
-   BIEN CAMERA
-   ===================================================== */
-
-let html5QrCode = null;
-
-let dangChay = false;
-
-let daQuet = false;
-
-let anhBase64 = "";
-
-let maQRHienTai = "";
-
-
-/* =====================================================
+/* =========================
    MO CAMERA
-   ===================================================== */
+========================= */
 
-function moCamera() {
+async function moCamera() {
 
-    if (dangChay) {
-        return;
-    }
+    try {
 
-    daQuet = false;
-
-    document.getElementById("trangThai").innerHTML =
-        "Dang tim camera...";
-
-
-    Html5Qrcode.getCameras()
-
-    .then(function(cameras) {
-
-        if (!cameras ||
-            cameras.length === 0) {
-
-            document.getElementById(
-                "trangThai"
-            ).innerHTML =
-                "Khong tim thay camera";
-
-            return;
-        }
-
-
-        /*
-         * Mac dinh lay camera dau tien
-         */
-
-        let cameraId =
-            cameras[0].id;
-
-
-        /*
-         * Uu tien camera sau
-         */
-
-        for (
-            let i = 0;
-            i < cameras.length;
-            i++
-        ) {
-
-            let ten =
-                (cameras[i].label || "")
-                .toLowerCase();
-
-
-            if (
-                ten.includes("back") ||
-                ten.includes("rear") ||
-                ten.includes("environment") ||
-                ten.includes("sau")
-            ) {
-
-                cameraId =
-                    cameras[i].id;
-
-                break;
-            }
-
-        }
-
-
-        /*
-         * Tao doi tuong QR
-         */
+        document.getElementById(
+            "thongBao"
+        ).innerText =
+            "Dang mo camera...";
 
         html5QrCode =
             new Html5Qrcode("reader");
 
 
-        const cauHinh = {
+        const cameras =
+            await Html5Qrcode.getCameras();
 
-            fps:10,
 
-            qrbox:{
-                width:250,
-                height:250
+        if (!cameras || cameras.length === 0) {
+
+            throw new Error(
+                "Khong tim thay camera"
+            );
+
+        }
+
+
+        let cameraId =
+            cameras[0].id;
+
+
+        /* Uu tien camera sau */
+
+        for (let camera of cameras) {
+
+            const ten =
+                String(
+                    camera.label || ""
+                ).toLowerCase();
+
+            if (
+                ten.includes("back") ||
+                ten.includes("rear") ||
+                ten.includes("environment")
+            ) {
+
+                cameraId = camera.id;
+
+                break;
+
             }
 
-        };
+        }
 
 
-        /*
-         * BAT DAU CAMERA
-         */
-
-        html5QrCode.start(
+        await html5QrCode.start(
 
             cameraId,
 
-            cauHinh,
+            {
 
-            function(maQR) {
+                fps: 10,
 
-                xuLyQR(maQR);
+                qrbox: {
+                    width: 250,
+                    height: 250
+                }
 
             },
 
-            function(loi) {
+            xuLyQR,
 
-                /*
-                 * Khong hien loi scan
-                 */
+            function(errorMessage) {
+
+                // Bo qua loi quet lien tuc
 
             }
 
-        )
-
-        .then(function() {
-
-            dangChay = true;
-
-            document.getElementById(
-                "trangThai"
-            ).innerHTML =
-                "Camera dang hoat dong - Dua QR vao khung";
-
-        })
-
-        .catch(function(error) {
-
-            console.log(
-                "LOI CAMERA:",
-                error
-            );
-
-            document.getElementById(
-                "trangThai"
-            ).innerHTML =
-                "Khong mo duoc camera: " +
-                error;
-
-        });
-
-
-    })
-
-    .catch(function(error) {
-
-        console.log(
-            "LOI GET CAMERA:",
-            error
         );
 
-        document.getElementById(
-            "trangThai"
-        ).innerHTML =
-            "Khong lay duoc danh sach camera: " +
-            error;
 
-    });
+        document.getElementById(
+            "thongBao"
+        ).innerText =
+            "Dua QR vao khung de quet";
+
+
+    } catch(e) {
+
+        console.error(e);
+
+        document.getElementById(
+            "thongBao"
+        ).innerText =
+            "LOI CAMERA: " + e.message;
+
+    }
 
 }
 
 
-/* =====================================================
-   XU LY QR
-   ===================================================== */
+/* =========================
+   XU LY KHI QUET DUOC QR
+========================= */
 
-function xuLyQR(maQR) {
+async function xuLyQR(maQR) {
 
     if (daQuet) {
+
         return;
+
     }
+
 
     daQuet = true;
 
@@ -384,497 +303,426 @@ function xuLyQR(maQR) {
         maQR;
 
 
-    /*
-     * BIP QUET QR
-     */
+    /* BIP QUET */
 
     bipQuetQR();
 
 
     document.getElementById(
-        "maQR"
-    ).innerHTML =
-        "Ma QR: " + maQR;
+        "thongBao"
+    ).innerText =
+        "Da quet QR: " + maQR;
 
 
-    document.getElementById(
-        "trangThai"
-    ).innerHTML =
-        "Da quet QR - Dang chup anh...";
+    /* Cho camera on dinh */
+
+    await new Promise(
+        resolve =>
+            setTimeout(resolve, 300)
+    );
 
 
-    /*
-     * Cho camera on dinh
-     */
+    /* =========================
+       TU CHUP ANH TU VIDEO
+    ========================= */
 
-    setTimeout(function() {
+    try {
 
-        chupAnhTuCamera(
-
-            function(anh) {
-
-                if (anh) {
-
-                    anhBase64 =
-                        anh;
+        const reader =
+            document.getElementById(
+                "reader"
+            );
 
 
-                    /*
-                     * BIP CHUP ANH
-                     */
-
-                    bipChupAnh();
-
-
-                    document.getElementById(
-                        "anhChup"
-                    ).src =
-                        anh;
+        const video =
+            reader.querySelector(
+                "video"
+            );
 
 
-                    document.getElementById(
-                        "anhChup"
-                    ).style.display =
-                        "block";
+        if (!video) {
+
+            throw new Error(
+                "Khong tim thay video camera"
+            );
+
+        }
 
 
-                    document.getElementById(
-                        "trangThai"
-                    ).innerHTML =
-                        "Da quet QR va chup anh thanh cong";
+        const canvas =
+            document.createElement(
+                "canvas"
+            );
 
 
-                } else {
-
-                    document.getElementById(
-                        "trangThai"
-                    ).innerHTML =
-                        "Khong chup duoc anh";
-
-                }
+        const maxWidth = 1280;
 
 
-                /*
-                 * Dung camera sau khi chup
-                 */
+        let width =
+            video.videoWidth;
 
-                dungCamera();
-
-            }
-
-        );
-
-    },300);
-
-}
+        let height =
+            video.videoHeight;
 
 
-/* =====================================================
-   CHUP ANH TU CAMERA
-   ===================================================== */
+        if (width > maxWidth) {
 
-function chupAnhTuCamera(callback) {
-
-    const reader =
-        document.getElementById(
-            "reader"
-        );
-
-
-    const video =
-        reader.querySelector(
-            "video"
-        );
-
-
-    if (!video) {
-
-        callback("");
-
-        return;
-    }
-
-
-    if (
-        video.readyState <
-        HTMLMediaElement.HAVE_CURRENT_DATA
-    ) {
-
-        setTimeout(
-            function() {
-
-                chupAnhTuCamera(
-                    callback
+            height =
+                Math.round(
+                    height *
+                    maxWidth /
+                    width
                 );
 
-            },
-            300
-        );
+            width =
+                maxWidth;
 
-        return;
-    }
+        }
 
 
-    const canvas =
-        document.createElement(
-            "canvas"
-        );
+        canvas.width =
+            width;
+
+        canvas.height =
+            height;
 
 
-    let width =
-        video.videoWidth;
-
-
-    let height =
-        video.videoHeight;
-
-
-    if (
-        !width ||
-        !height
-    ) {
-
-        callback("");
-
-        return;
-    }
-
-
-    /*
-     * Gioi han anh 1280px
-     */
-
-    const maxWidth =
-        1280;
-
-
-    if (width > maxWidth) {
-
-        const tyLe =
-            maxWidth / width;
-
-        width =
-            maxWidth;
-
-        height =
-            Math.round(
-                height * tyLe
+        const ctx =
+            canvas.getContext(
+                "2d"
             );
 
-    }
 
-
-    canvas.width =
-        width;
-
-    canvas.height =
-        height;
-
-
-    const ctx =
-        canvas.getContext(
-            "2d"
+        ctx.drawImage(
+            video,
+            0,
+            0,
+            width,
+            height
         );
 
 
-    ctx.drawImage(
-        video,
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    /*
-     * Tao JPEG
-     */
-
-    anhBase64 =
-        canvas.toDataURL(
-            "image/jpeg",
-            0.75
-        );
-
-
-    callback(
-        anhBase64
-    );
-
-}
-
-
-/* =====================================================
-   DUNG CAMERA
-   ===================================================== */
-
-function dungCamera() {
-
-    if (
-        html5QrCode &&
-        dangChay
-    ) {
-
-        html5QrCode.stop()
-
-        .then(function() {
-
-            html5QrCode.clear();
-
-            html5QrCode =
-                null;
-
-            dangChay =
-                false;
-
-        })
-
-        .catch(function(error) {
-
-            console.log(
-                "Loi dung camera:",
-                error
+        const anh =
+            canvas.toDataURL(
+                "image/jpeg",
+                0.75
             );
 
-            html5QrCode =
-                null;
 
-            dangChay =
-                false;
+        if (anh) {
 
-        });
-
-    }
-
-}
+            anhBase64 =
+                anh;
 
 
-/* =====================================================
-   CHUP LAI
-   ===================================================== */
+            /* BIP CHUP */
 
-function chupLai() {
-
-    if (dangChay) {
-        return;
-    }
+            bipChupAnh();
 
 
-    if (!maQRHienTai) {
+            const anhXem =
+                document.getElementById(
+                    "anhXem"
+                );
+
+
+            anhXem.src =
+                anh;
+
+
+            anhXem.style.display =
+                "block";
+
+
+            document.getElementById(
+                "thongBao"
+            ).innerText =
+                "Da quet va tu chup anh: " +
+                maQR;
+
+        }
+
+
+    } catch(e) {
+
+        console.error(e);
 
         document.getElementById(
-            "trangThai"
-        ).innerHTML =
-            "Chua co ma QR";
+            "thongBao"
+        ).innerText =
+            "Quet duoc QR nhung khong chup duoc anh";
 
-        return;
     }
+
+
+    /* DUNG CAMERA */
+
+    await dungCamera();
+
+}
+
+
+/* =========================
+   DUNG CAMERA
+========================= */
+
+async function dungCamera() {
+
+    try {
+
+        if (html5QrCode) {
+
+            await html5QrCode.stop();
+
+            await html5QrCode.clear();
+
+        }
+
+    } catch(e) {
+
+        console.log(
+            "Loi dung camera:",
+            e
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CHUP LAI
+========================= */
+
+async function chupLai() {
+
+    document.getElementById(
+        "anhXem"
+    ).style.display =
+        "none";
 
 
     document.getElementById(
-        "trangThai"
-    ).innerHTML =
+        "thongBao"
+    ).innerText =
         "Dang mo camera de chup lai...";
 
 
-    moCameraChoChupLai();
+    await moCameraChoChupLai();
 
 }
 
 
-/* =====================================================
-   MO CAMERA CHO CHUP LAI
-   ===================================================== */
+/* =========================
+   MO CAMERA DE CHUP LAI
+========================= */
 
-function moCameraChoChupLai() {
+async function moCameraChoChupLai() {
 
-    if (dangChay) {
-        return;
-    }
+    try {
+
+        html5QrCode =
+            new Html5Qrcode("reader");
 
 
-    Html5Qrcode.getCameras()
-
-    .then(function(cameras) {
-
-        if (
-            !cameras ||
-            cameras.length === 0
-        ) {
-
-            document.getElementById(
-                "trangThai"
-            ).innerHTML =
-                "Khong tim thay camera";
-
-            return;
-        }
+        const cameras =
+            await Html5QrCode.getCameras();
 
 
         let cameraId =
             cameras[0].id;
 
 
-        for (
-            let i = 0;
-            i < cameras.length;
-            i++
-        ) {
+        for (let camera of cameras) {
 
-            let ten =
-                (cameras[i].label || "")
-                .toLowerCase();
-
+            const ten =
+                String(
+                    camera.label || ""
+                ).toLowerCase();
 
             if (
                 ten.includes("back") ||
                 ten.includes("rear") ||
-                ten.includes("environment") ||
-                ten.includes("sau")
+                ten.includes("environment")
             ) {
 
                 cameraId =
-                    cameras[i].id;
+                    camera.id;
 
                 break;
+
             }
 
         }
 
 
-        html5QrCode =
-            new Html5Qrcode(
-                "reader"
-            );
-
-
-        const cauHinh = {
-
-            fps:10,
-
-            qrbox:{
-                width:250,
-                height:250
-            }
-
-        };
-
-
-        html5QrCode.start(
+        await html5QrCode.start(
 
             cameraId,
 
-            cauHinh,
+            {
 
-            function(maQR) {
+                fps: 10,
 
-                /*
-                 * Khi chup lai,
-                 * khong doi QR moi
-                 */
+                qrbox: {
+                    width: 250,
+                    height: 250
+                }
 
             },
 
-            function(loi) {}
+            async function(maQR) {
 
-        )
+                /*
+                   Chup lai chi lay anh,
+                   khong doi ma QR
+                */
 
-        .then(function() {
+                try {
 
-            dangChay =
-                true;
+                    const reader =
+                        document.getElementById(
+                            "reader"
+                        );
 
-
-            document.getElementById(
-                "trangThai"
-            ).innerHTML =
-                "Camera dang mo - Bam chup lai sau khi canh anh";
-
-
-            /*
-             * Tu chup sau 1 giay
-             */
-
-            setTimeout(
-                function() {
-
-                    chupAnhTuCamera(
-
-                        function(anh) {
-
-                            if (anh) {
-
-                                anhBase64 =
-                                    anh;
-
-                                bipChupAnh();
+                    const video =
+                        reader.querySelector(
+                            "video"
+                        );
 
 
-                                document.getElementById(
-                                    "anhChup"
-                                ).src =
-                                    anh;
-
-
-                                document.getElementById(
-                                    "anhChup"
-                                ).style.display =
-                                    "block";
-
-
-                                document.getElementById(
-                                    "trangThai"
-                                ).innerHTML =
-                                    "Da chup lai anh";
-
-                            }
-
-
-                            dungCamera();
-
-                        }
-
+                    await new Promise(
+                        resolve =>
+                            setTimeout(
+                                resolve,
+                                300
+                            )
                     );
 
-                },
-                1000
-            );
 
-        })
+                    const canvas =
+                        document.createElement(
+                            "canvas"
+                        );
 
-        .catch(function(error) {
 
-            document.getElementById(
-                "trangThai"
-            ).innerHTML =
-                "Khong mo duoc camera: " +
-                error;
+                    let width =
+                        video.videoWidth;
 
-        });
+                    let height =
+                        video.videoHeight;
 
-    })
 
-    .catch(function(error) {
+                    const maxWidth =
+                        1280;
+
+
+                    if (
+                        width >
+                        maxWidth
+                    ) {
+
+                        height =
+                            Math.round(
+                                height *
+                                maxWidth /
+                                width
+                            );
+
+                        width =
+                            maxWidth;
+
+                    }
+
+
+                    canvas.width =
+                        width;
+
+                    canvas.height =
+                        height;
+
+
+                    const ctx =
+                        canvas.getContext(
+                            "2d"
+                        );
+
+
+                    ctx.drawImage(
+                        video,
+                        0,
+                        0,
+                        width,
+                        height
+                    );
+
+
+                    anhBase64 =
+                        canvas.toDataURL(
+                            "image/jpeg",
+                            0.75
+                        );
+
+
+                    document.getElementById(
+                        "anhXem"
+                    ).src =
+                        anhBase64;
+
+
+                    document.getElementById(
+                        "anhXem"
+                    ).style.display =
+                        "block";
+
+
+                    bipChupAnh();
+
+
+                    document.getElementById(
+                        "thongBao"
+                    ).innerText =
+                        "Da chup lai anh";
+
+
+                    await dungCamera();
+
+                } catch(e) {
+
+                    console.error(e);
+
+                }
+
+            },
+
+            function(errorMessage) {}
+
+        );
+
+    } catch(e) {
 
         document.getElementById(
-            "trangThai"
-        ).innerHTML =
-            "Khong lay duoc camera: " +
-            error;
+            "thongBao"
+        ).innerText =
+            "LOI CAMERA: " +
+            e.message;
 
-    });
+    }
 
 }
 
 
-/* =====================================================
+/* =========================
    QUET QR MOI
-   ===================================================== */
+========================= */
 
-function quetMoi() {
+async function quetMoi() {
 
-    dungCamera();
+    await dungCamera();
 
+
+    daQuet =
+        false;
 
     maQRHienTai =
         "";
@@ -882,44 +730,39 @@ function quetMoi() {
     anhBase64 =
         "";
 
-    daQuet =
-        false;
-
 
     document.getElementById(
-        "maQR"
-    ).innerHTML =
+        "anhXem"
+    ).src =
         "";
 
-
     document.getElementById(
-        "anhChup"
+        "anhXem"
     ).style.display =
         "none";
 
 
     document.getElementById(
-        "anhChup"
-    ).src =
-        "";
+        "thongBao"
+    ).innerText =
+        "Dang mo camera...";
 
 
-    document.getElementById(
-        "trangThai"
-    ).innerHTML =
-        "San sang quet QR moi";
-
-
-    setTimeout(
-        function() {
-
-            moCamera();
-
-        },
-        300
-    );
+    await moCamera();
 
 }
+
+
+/* =========================
+   TU DONG MO CAMERA
+========================= */
+
+window.onload =
+    function() {
+
+        moCamera();
+
+    };
 
 </script>
 
