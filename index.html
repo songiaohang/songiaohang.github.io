@@ -53,6 +53,51 @@ h2 {
     box-sizing: border-box;
 }
 
+<div id="khuNhanHang" style="display:none; margin:15px auto; width:95%; max-width:500px;">
+
+    <input
+        id="maNVNhap"
+        type="text"
+        value="NV01"
+        placeholder="Nhap ma nhan vien"
+        style="
+            width:90%;
+            max-width:400px;
+            padding:14px;
+            font-size:18px;
+            box-sizing:border-box;
+            margin:8px;
+        "
+    >
+
+    <button
+        id="btnNhanHang"
+        onclick="nhanHangTuApp()"
+        disabled
+    >
+        NHAN HANG
+    </button>
+
+</div>
+
+<iframe
+    name="khungGui"
+    id="khungGui"
+    style="display:none;"
+></iframe>
+
+<form
+    id="formNhanHang"
+    method="POST"
+    action="https://script.google.com/macros/s/AKfycbxX8tCmxmDWaE0iqqzySEfgvIYaFhiL64cDAwtII9iwze_tPTGa8qyWcjSNZzvjLAVGw/exec"
+    target="khungGui"
+    style="display:none;"
+>
+    <input type="hidden" name="hanhDong" id="guiHanhDong">
+    <input type="hidden" name="maQR" id="guiMaQR">
+    <input type="hidden" name="maNV" id="guiMaNV">
+    <input type="hidden" name="anhBase64" id="guiAnhBase64">
+</form>
 .dong {
     padding: 7px 0;
     border-bottom: 1px solid #ddd;
@@ -162,6 +207,41 @@ button {
 
 
 <script>
+function capNhatNutNhanHang(data) {
+
+    const khu =
+        document.getElementById(
+            "khuNhanHang"
+        );
+
+    const nut =
+        document.getElementById(
+            "btnNhanHang"
+        );
+
+    if (!data || !data.ok) {
+
+        khu.style.display = "none";
+        nut.disabled = true;
+
+        return;
+    }
+
+    if (
+        data.trangThai ===
+        "TON_KHO"
+    ) {
+
+        khu.style.display = "block";
+        nut.disabled = false;
+
+    }
+    else {
+
+        khu.style.display = "none";
+        nut.disabled = true;
+    }
+}
 
 /* =====================================================
    BIEN CAMERA
@@ -390,7 +470,7 @@ function hienThiDonHang(data) {
         "thongTinDon"
     ).style.display =
         "block";
-
+    CapNhatNutNhanHang(dât);
 }
 
 
