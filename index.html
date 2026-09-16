@@ -559,153 +559,112 @@ function hienThiDonHang(data) {
    GOI APPS SCRIPT TIM DON
    ===================================================== */
 
-function timDonTrenServer(
-    maQR
-) {
+function timDonTrenServer(maQR) {
 
-    return new Promise(
-        function(resolve, reject) {
+    return new Promise(function(resolve, reject) {
 
-            document.getElementById(
-                "thongBao"
-            ).innerText =
-                "Dang tim don " +
-                maQR +
-                "...";
+        document.getElementById("thongBao").innerText =
+            "Dang tim don " + maQR + "...";
 
+        const tenCallback =
+            "nhanKetQuaQR_" + Date.now();
 
-            const tenCallback =
-                "nhanKetQuaQR_" +
-                Date.now();
+        let script = null;
 
+        let daXuLy = false;
 
-            window[tenCallback] =
-                function(data) {
+        function donDep() {
 
-                    console.log(
-                        "Du lieu tu Apps Script:",
-                        data
-                    );
+            delete window[tenCallback];
 
-
-                    delete window[
-                        tenCallback
-                    ];
-
-
-                    if (
-                        script.parentNode
-                    ) {
-
-                        script.parentNode.removeChild(
-                            script
-                        );
-
-                    }
-
-
-                    if (
-                        data.ok
-                    ) {
-
-                        hienThiDonHang(
-                            data
-                        );
-
-
-                        document.getElementById(
-                            "thongBao"
-                        ).innerText =
-                            "Da tim thay don: " +
-                            maQR;
-
-
-                        resolve(data);
-
-                    }
-                    else {
-
-                        document.getElementById(
-                            "thongBao"
-                        ).innerText =
-                            data.msg ||
-                            "Khong tim thay don";
-
-
-                        resolve(data);
-
-                    }
-
-                };
-
-
-            const script =
-                document.createElement(
-                    "script"
-                );
-
-
-            script.src =
-                URL_APPS_SCRIPT +
-                "?action=timDon" +
-                "&maQR=" +
-                encodeURIComponent(
-                    maQR
-                ) +
-                "&callback=" +
-                encodeURIComponent(
-                    tenCallback
-                );
-
-
-            script.onerror =
-                function() {
-
-                    delete window[
-                        tenCallback
-                    ];
-
-
-                    if (
-                        script.parentNode
-                    ) {
-
-                        script.parentNode.removeChild(
-                            script
-                        );
-
-                    }
-
-
-                    document.getElementById(
-                        "thongBao"
-                    ).innerText =
-                        "Loi ket noi Apps Script";
-
-
-                    alert(
-                        "Khong ket noi duoc Apps Script"
-                    );
-
-
-                    reject(
-                        new Error(
-                            "Khong tai duoc Apps Script"
-                        )
-                    );
-
-                };
-
-
-            document.body.appendChild(
-                script
-            );
+            if (script && script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
 
         }
-    );
 
+        window[tenCallback] = function(data) {
+
+            if (daXuLy) {
+                return;
+            }
+
+            daXuLy = true;
+
+            console.log(
+                "Du lieu tu Apps Script:",
+                data
+            );
+
+            donDep();
+
+            if (data && data.ok) {
+
+                hienThiDonHang(data);
+
+                document.getElementById("thongBao").innerText =
+                    "Da tim thay don: " + maQR;
+
+                resolve(data);
+
+            }
+            else {
+
+                document.getElementById("thongBao").innerText =
+                    (data && data.msg) ||
+                    "Khong tim thay don";
+
+                resolve(
+                    data || {
+                        ok: false,
+                        msg: "Khong co du lieu tra ve"
+                    }
+                );
+
+            }
+
+        };
+
+        script =
+            document.createElement("script");
+
+        script.src =
+            URL_APPS_SCRIPT +
+            "?action=timDon" +
+            "&maQR=" +
+            encodeURIComponent(maQR) +
+            "&callback=" +
+            encodeURIComponent(tenCallback);
+
+        script.onerror = function() {
+
+            if (daXuLy) {
+                return;
+            }
+
+            daXuLy = true;
+
+            donDep();
+
+            document.getElementById("thongBao").innerText =
+                "Loi ket noi Apps Script";
+
+            alert(
+                "Khong ket noi duoc Apps Script"
+            );
+
+            reject(
+                new Error(
+                    "Khong tai duoc Apps Script"
+                )
+            );
+
+        };
+
+        document.body.appendChild(script);
+
+    });
 }
-
 
 /* =====================================================
    NHAN HANG
