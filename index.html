@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -36,6 +35,33 @@ h2 {
     display: none;
 }
 
+#thongBao {
+    margin: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#thongTinDon {
+    display: none;
+    width: 95%;
+    max-width: 500px;
+    margin: 15px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.dong {
+    padding: 7px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.tenCot {
+    font-weight: bold;
+}
+
 button {
     width: 90%;
     max-width: 400px;
@@ -46,12 +72,6 @@ button {
     border: none;
     background: #333;
     color: white;
-}
-
-#thongBao {
-    margin: 10px;
-    font-size: 18px;
-    font-weight: bold;
 }
 </style>
 </head>
@@ -68,7 +88,69 @@ button {
 
 <img id="anhXem">
 
-<br>
+<div id="thongTinDon">
+
+    <div class="dong">
+        <span class="tenCot">Ma QR:</span>
+        <span id="maQR"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Ma don:</span>
+        <span id="maDon"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Khach hang:</span>
+        <span id="khachHang"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">So dien thoai:</span>
+        <span id="soDienThoai"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Dia chi:</span>
+        <span id="diaChi"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Ten hang:</span>
+        <span id="tenHang"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">So luong:</span>
+        <span id="soLuong"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Tien hang:</span>
+        <span id="tienHang"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Tien ship:</span>
+        <span id="tienShip"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Tong tien:</span>
+        <span id="tongTien"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Ton kho:</span>
+        <span id="tonKho"></span>
+    </div>
+
+    <div class="dong">
+        <span class="tenCot">Trang thai:</span>
+        <span id="trangThai"></span>
+    </div>
+
+</div>
 
 <button onclick="chupLai()">
     CHUP LAI
@@ -78,7 +160,12 @@ button {
     QUET QR MOI
 </button>
 
+
 <script>
+
+/* =====================================================
+   BIEN CAMERA
+   ===================================================== */
 
 let html5QrCode = null;
 
@@ -91,11 +178,23 @@ let anhBase64 = "";
 let audioContext = null;
 
 
-/* =========================
-   TAO TIENG BIP
-========================= */
+/* =====================================================
+   URL APPS SCRIPT
+   ===================================================== */
 
-function taoTiengBip(tanSo, thoiGian, amLuong) {
+const URL_APPS_SCRIPT =
+    "https://script.google.com/macros/s/AKfycbxX8tCmxmDWaE0iqqzySEfgvIYFaFhiL64cDAwtII9iwze_tPTGa8qyWcjSNZzvjLAVGw/exec";
+
+
+/* =====================================================
+   TAO TIENG BIP
+   ===================================================== */
+
+function taoTiengBip(
+    tanSo,
+    thoiGian,
+    amLuong
+) {
 
     try {
 
@@ -109,7 +208,10 @@ function taoTiengBip(tanSo, thoiGian, amLuong) {
 
         }
 
-        if (audioContext.state === "suspended") {
+        if (
+            audioContext.state ===
+            "suspended"
+        ) {
 
             audioContext.resume();
 
@@ -121,20 +223,26 @@ function taoTiengBip(tanSo, thoiGian, amLuong) {
         const gain =
             audioContext.createGain();
 
-        oscillator.type = "square";
+        oscillator.type =
+            "square";
 
-        oscillator.frequency.value = tanSo;
+        oscillator.frequency.value =
+            tanSo;
 
-        gain.gain.value = amLuong;
+        gain.gain.value =
+            amLuong;
 
         oscillator.connect(gain);
 
-        gain.connect(audioContext.destination);
+        gain.connect(
+            audioContext.destination
+        );
 
         oscillator.start();
 
         oscillator.stop(
-            audioContext.currentTime + thoiGian
+            audioContext.currentTime +
+            thoiGian
         );
 
     } catch(e) {
@@ -149,8 +257,6 @@ function taoTiengBip(tanSo, thoiGian, amLuong) {
 }
 
 
-/* BIP KHI QUET QR */
-
 function bipQuetQR() {
 
     taoTiengBip(
@@ -161,8 +267,6 @@ function bipQuetQR() {
 
 }
 
-
-/* BIP KHI CHUP ANH */
 
 function bipChupAnh() {
 
@@ -175,9 +279,214 @@ function bipChupAnh() {
 }
 
 
-/* =========================
+/* =====================================================
+   DINH DANG TIEN
+   ===================================================== */
+
+function dinhDangTien(so) {
+
+    if (
+        so === null ||
+        so === undefined ||
+        so === ""
+    ) {
+
+        return "";
+
+    }
+
+    const n =
+        Number(so);
+
+    if (
+        isNaN(n)
+    ) {
+
+        return so;
+
+    }
+
+    return n.toLocaleString(
+        "vi-VN"
+    );
+
+}
+
+
+/* =====================================================
+   HIEN THI DON HANG
+   ===================================================== */
+
+function hienThiDonHang(data) {
+
+    document.getElementById(
+        "maQR"
+    ).innerText =
+        data.maQR || "";
+
+    document.getElementById(
+        "maDon"
+    ).innerText =
+        data.maDon || "";
+
+    document.getElementById(
+        "khachHang"
+    ).innerText =
+        data.khachHang || "";
+
+    document.getElementById(
+        "soDienThoai"
+    ).innerText =
+        data.soDienThoai || "";
+
+    document.getElementById(
+        "diaChi"
+    ).innerText =
+        data.diaChi || "";
+
+    document.getElementById(
+        "tenHang"
+    ).innerText =
+        data.tenHang || "";
+
+    document.getElementById(
+        "soLuong"
+    ).innerText =
+        data.soLuong ?? "";
+
+    document.getElementById(
+        "tienHang"
+    ).innerText =
+        dinhDangTien(
+            data.tienHang
+        );
+
+    document.getElementById(
+        "tienShip"
+    ).innerText =
+        dinhDangTien(
+            data.tienShip
+        );
+
+    document.getElementById(
+        "tongTien"
+    ).innerText =
+        dinhDangTien(
+            data.tongTien
+        );
+
+    document.getElementById(
+        "tonKho"
+    ).innerText =
+        data.tonKho ?? "";
+
+    document.getElementById(
+        "trangThai"
+    ).innerText =
+        data.trangThai || "";
+
+
+    document.getElementById(
+        "thongTinDon"
+    ).style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   GOI APPS SCRIPT TIM DON
+   ===================================================== */
+
+async function timDonTrenServer(
+    maQR
+) {
+
+    try {
+
+        document.getElementById(
+            "thongBao"
+        ).innerText =
+            "Dang tim don " +
+            maQR +
+            "...";
+
+
+        const url =
+            URL_APPS_SCRIPT +
+            "?action=timDon&maQR=" +
+            encodeURIComponent(
+                maQR
+            );
+
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "GET"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Du lieu tu Apps Script:",
+            data
+        );
+
+
+        if (
+            data.ok
+        ) {
+
+            hienThiDonHang(
+                data
+            );
+
+
+            document.getElementById(
+                "thongBao"
+            ).innerText =
+                "Da tim thay don: " +
+                maQR;
+
+        } else {
+
+            document.getElementById(
+                "thongBao"
+            ).innerText =
+                data.msg ||
+                "Khong tim thay don";
+
+        }
+
+
+    } catch(e) {
+
+        console.error(e);
+
+        document.getElementById(
+            "thongBao"
+        ).innerText =
+            "Loi ket noi Apps Script";
+
+        alert(
+            "Khong ket noi duoc Apps Script.\n\n" +
+            e.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
    MO CAMERA
-========================= */
+   ===================================================== */
 
 async function moCamera() {
 
@@ -188,15 +497,21 @@ async function moCamera() {
         ).innerText =
             "Dang mo camera...";
 
+
         html5QrCode =
-            new Html5Qrcode("reader");
+            new Html5Qrcode(
+                "reader"
+            );
 
 
         const cameras =
             await Html5Qrcode.getCameras();
 
 
-        if (!cameras || cameras.length === 0) {
+        if (
+            !cameras ||
+            cameras.length === 0
+        ) {
 
             throw new Error(
                 "Khong tim thay camera"
@@ -209,14 +524,15 @@ async function moCamera() {
             cameras[0].id;
 
 
-        /* Uu tien camera sau */
-
-        for (let camera of cameras) {
+        for (
+            let camera of cameras
+        ) {
 
             const ten =
                 String(
                     camera.label || ""
                 ).toLowerCase();
+
 
             if (
                 ten.includes("back") ||
@@ -224,7 +540,8 @@ async function moCamera() {
                 ten.includes("environment")
             ) {
 
-                cameraId = camera.id;
+                cameraId =
+                    camera.id;
 
                 break;
 
@@ -250,7 +567,9 @@ async function moCamera() {
 
             xuLyQR,
 
-            function(errorMessage) {
+            function(
+                errorMessage
+            ) {
 
                 // Bo qua loi quet lien tuc
 
@@ -272,31 +591,39 @@ async function moCamera() {
         document.getElementById(
             "thongBao"
         ).innerText =
-            "LOI CAMERA: " + e.message;
+            "LOI CAMERA: " +
+            e.message;
 
     }
 
 }
 
 
-/* =========================
-   XU LY KHI QUET DUOC QR
-========================= */
+/* =====================================================
+   XU LY QR
+   ===================================================== */
 
-async function xuLyQR(maQR) {
+async function xuLyQR(
+    maQR
+) {
 
-    if (daQuet) {
+    if (
+        daQuet
+    ) {
 
         return;
 
     }
 
 
-    daQuet = true;
+    daQuet =
+        true;
 
 
     maQR =
-        String(maQR).trim();
+        String(
+            maQR
+        ).trim();
 
 
     maQRHienTai =
@@ -311,20 +638,22 @@ async function xuLyQR(maQR) {
     document.getElementById(
         "thongBao"
     ).innerText =
-        "Da quet QR: " + maQR;
+        "Da quet QR: " +
+        maQR;
 
-
-    /* Cho camera on dinh */
 
     await new Promise(
         resolve =>
-            setTimeout(resolve, 300)
+            setTimeout(
+                resolve,
+                300
+            )
     );
 
 
-    /* =========================
-       TU CHUP ANH TU VIDEO
-    ========================= */
+    /* =================================================
+       TU CHUP ANH
+       ================================================= */
 
     try {
 
@@ -355,7 +684,8 @@ async function xuLyQR(maQR) {
             );
 
 
-        const maxWidth = 1280;
+        const maxWidth =
+            1280;
 
 
         let width =
@@ -365,7 +695,9 @@ async function xuLyQR(maQR) {
             video.videoHeight;
 
 
-        if (width > maxWidth) {
+        if (
+            width > maxWidth
+        ) {
 
             height =
                 Math.round(
@@ -415,8 +747,6 @@ async function xuLyQR(maQR) {
                 anh;
 
 
-            /* BIP CHUP */
-
             bipChupAnh();
 
 
@@ -459,18 +789,29 @@ async function xuLyQR(maQR) {
 
     await dungCamera();
 
+
+    /* =================================================
+       GOI APPS SCRIPT
+       ================================================= */
+
+    await timDonTrenServer(
+        maQR
+    );
+
 }
 
 
-/* =========================
+/* =====================================================
    DUNG CAMERA
-========================= */
+   ===================================================== */
 
 async function dungCamera() {
 
     try {
 
-        if (html5QrCode) {
+        if (
+            html5QrCode
+        ) {
 
             await html5QrCode.stop();
 
@@ -490,9 +831,9 @@ async function dungCamera() {
 }
 
 
-/* =========================
+/* =====================================================
    CHUP LAI
-========================= */
+   ===================================================== */
 
 async function chupLai() {
 
@@ -513,16 +854,18 @@ async function chupLai() {
 }
 
 
-/* =========================
-   MO CAMERA DE CHUP LAI
-========================= */
+/* =====================================================
+   MO CAMERA CHUP LAI
+   ===================================================== */
 
 async function moCameraChoChupLai() {
 
     try {
 
         html5QrCode =
-            new Html5Qrcode("reader");
+            new Html5Qrcode(
+                "reader"
+            );
 
 
         const cameras =
@@ -533,12 +876,15 @@ async function moCameraChoChupLai() {
             cameras[0].id;
 
 
-        for (let camera of cameras) {
+        for (
+            let camera of cameras
+        ) {
 
             const ten =
                 String(
                     camera.label || ""
                 ).toLowerCase();
+
 
             if (
                 ten.includes("back") ||
@@ -571,12 +917,9 @@ async function moCameraChoChupLai() {
 
             },
 
-            async function(maQR) {
-
-                /*
-                   Chup lai chi lay anh,
-                   khong doi ma QR
-                */
+            async function(
+                maQR
+            ) {
 
                 try {
 
@@ -584,6 +927,7 @@ async function moCameraChoChupLai() {
                         document.getElementById(
                             "reader"
                         );
+
 
                     const video =
                         reader.querySelector(
@@ -695,7 +1039,9 @@ async function moCameraChoChupLai() {
 
             },
 
-            function(errorMessage) {}
+            function(
+                errorMessage
+            ) {}
 
         );
 
@@ -712,9 +1058,9 @@ async function moCameraChoChupLai() {
 }
 
 
-/* =========================
+/* =====================================================
    QUET QR MOI
-========================= */
+   ===================================================== */
 
 async function quetMoi() {
 
@@ -743,6 +1089,12 @@ async function quetMoi() {
 
 
     document.getElementById(
+        "thongTinDon"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
         "thongBao"
     ).innerText =
         "Dang mo camera...";
@@ -753,9 +1105,9 @@ async function quetMoi() {
 }
 
 
-/* =========================
+/* =====================================================
    TU DONG MO CAMERA
-========================= */
+   ===================================================== */
 
 window.onload =
     function() {
@@ -768,3 +1120,4 @@ window.onload =
 
 </body>
 </html>
+
