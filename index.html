@@ -741,23 +741,46 @@ function timDonTrenServer(maQR) {
    ===================================================== */
 
 function nhanHangTuApp() {
-    const nut = document.getElementById("btnNhanHang");
-    const maQR = document.getElementById("maQR").value.trim();
-    const maNV = document.getElementById("maNV").value.trim();
-    const anh = document.getElementById("anhBase64").value;
 
-    if (!maQR) {
-        alert("Vui long nhap ma QR");
+    if (!maQRHienTai) {
+        alert("Chua co ma QR");
         return;
     }
+
+    if (!anhBase64) {
+        alert("Chua co anh chup");
+        return;
+    }
+
+    const maNV = document
+        .getElementById("maNVNhap")
+        .value
+        .trim();
 
     if (!maNV) {
-        alert("Vui long nhap ma nhan vien");
+        alert("Hay nhap ma nhan vien");
         return;
     }
 
+    const nut = document
+        .getElementById("btnNhanHang");
+
     nut.disabled = true;
-    nut.innerText = "Dang xu ly...";
+
+    document.getElementById("thongBao").innerText =
+        "Dang gui yeu cau nhan hang...";
+
+    document.getElementById("guiHanhDong").value =
+        "NHAN";
+
+    document.getElementById("guiMaQR").value =
+        maQRHienTai;
+
+    document.getElementById("guiMaNV").value =
+        maNV;
+
+    document.getElementById("guiAnhBase64").value =
+        anhBase64;
 
     document.getElementById("formNhanHang").submit();
 
@@ -766,25 +789,34 @@ function nhanHangTuApp() {
     const thoiGianCho = 2000;
 
     function kiemTraKetQua() {
-        document.getElementById("thongBao").innerText =
-            "Dang kiem tra ket qua (" + lanThu + "/" + soLanToiDa + ")...";
 
-        timDonTrenServer(maQR)
+        document.getElementById("thongBao").innerText =
+            "Dang kiem tra ket qua (" +
+            lanThu +
+            "/" +
+            soLanToiDa +
+            ")...";
+
+        timDonTrenServer(maQRHienTai)
+
             .then(function(data) {
+
                 if (
                     data &&
                     data.ok === true &&
                     data.trangThai === "DANG_GIAO"
                 ) {
-                    document.getElementById("thongBao").innerText =
-                        "Da nhan hang tu kho thanh cong";
 
-                    nut.disabled = true;
-                    nut.innerText = "Da nhan hang";
+                    document.getElementById("thongBao").innerText =
+                        "DA NHAN HANG THANH CONG";
+
+                    capNhatNutNhanHang(data);
+
                     return;
                 }
 
                 if (lanThu < soLanToiDa) {
+
                     lanThu++;
 
                     setTimeout(function() {
@@ -792,19 +824,23 @@ function nhanHangTuApp() {
                     }, thoiGianCho);
 
                 } else {
+
                     document.getElementById("thongBao").innerText =
                         data && data.msg
                             ? data.msg
-                            : "Chua xac nhan duoc trang thai don hang";
+                            : "Nhan hang chua thanh cong";
 
                     nut.disabled = false;
-                    nut.innerText = "Nhan hang";
                 }
+
             })
+
             .catch(function(err) {
-                console.error("Loi kiem tra ket qua:", err);
+
+                console.log(err);
 
                 if (lanThu < soLanToiDa) {
+
                     lanThu++;
 
                     setTimeout(function() {
@@ -812,18 +848,20 @@ function nhanHangTuApp() {
                     }, thoiGianCho);
 
                 } else {
+
                     document.getElementById("thongBao").innerText =
-                        "Khong xac nhan duoc ket qua. Vui long kiem tra lai.";
+                        "Khong xac nhan duoc ket qua";
 
                     nut.disabled = false;
-                    nut.innerText = "Nhan hang";
                 }
+
             });
     }
 
     setTimeout(function() {
         kiemTraKetQua();
     }, thoiGianCho);
+
 }
 
 /* =====================================================
