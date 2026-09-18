@@ -741,169 +741,90 @@ function timDonTrenServer(maQR) {
    ===================================================== */
 
 function nhanHangTuApp() {
+    const nut = document.getElementById("btnNhanHang");
+    const maQR = document.getElementById("maQR").value.trim();
+    const maNV = document.getElementById("maNV").value.trim();
+    const anh = document.getElementById("anhBase64").value;
 
-    if (
-        !maQRHienTai
-    ) {
-
-        alert(
-            "Chua co ma QR"
-        );
-
+    if (!maQR) {
+        alert("Vui long nhap ma QR");
         return;
-
     }
 
-
-    if (
-        !anhBase64
-    ) {
-
-        alert(
-            "Chua co anh chup"
-        );
-
+    if (!maNV) {
+        alert("Vui long nhap ma nhan vien");
         return;
-
     }
 
+    nut.disabled = true;
+    nut.innerText = "Dang xu ly...";
 
-    const maNV =
-        document.getElementById(
-            "maNVNhap"
-        ).value.trim();
+    document.getElementById("formNhanHang").submit();
 
+    let lanThu = 1;
+    const soLanToiDa = 6;
+    const thoiGianCho = 2000;
 
-    if (
-        !maNV
-    ) {
+    function kiemTraKetQua() {
+        document.getElementById("thongBao").innerText =
+            "Dang kiem tra ket qua (" + lanThu + "/" + soLanToiDa + ")...";
 
-        alert(
-            "Hay nhap ma nhan vien"
-        );
+        timDonTrenServer(maQR)
+            .then(function(data) {
+                if (
+                    data &&
+                    data.ok === true &&
+                    data.trangThai === "DANG_GIAO"
+                ) {
+                    document.getElementById("thongBao").innerText =
+                        "Da nhan hang tu kho thanh cong";
 
-        return;
-
-    }
-
-
-    const nut =
-        document.getElementById(
-            "btnNhanHang"
-        );
-
-
-    nut.disabled =
-        true;
-
-
-    document.getElementById(
-        "thongBao"
-    ).innerText =
-        "Dang gui yeu cau nhan hang...";
-
-
-    document.getElementById(
-        "guiHanhDong"
-    ).value =
-        "NHAN";
-
-
-    document.getElementById(
-        "guiMaQR"
-    ).value =
-        maQRHienTai;
-
-
-    document.getElementById(
-        "guiMaNV"
-    ).value =
-        maNV;
-
-
-    document.getElementById(
-        "guiAnhBase64"
-    ).value =
-        anhBase64;
-
-
-    document.getElementById(
-        "formNhanHang"
-    ).submit();
-
-
-    setTimeout(
-        function() {
-
-            document.getElementById(
-                "thongBao"
-            ).innerText =
-                "Dang kiem tra ket qua...";
-
-
-            timDonTrenServer(
-                maQRHienTai
-            )
-            .then(
-                function(data) {
-
-                    if (
-                        data.ok &&
-                        data.trangThai ===
-                        "DANG_GIAO"
-                    ) {
-
-                        document.getElementById(
-                            "thongBao"
-                        ).innerText =
-                            "DA NHAN HANG THANH CONG";
-
-
-                        capNhatNutNhanHang(
-                            data
-                        );
-
-                    }
-                    else {
-
-                        document.getElementById(
-                            "thongBao"
-                        ).innerText =
-                            data.msg ||
-                            "Nhan hang chua thanh cong";
-
-
-                        nut.disabled =
-                            false;
-
-                    }
-
+                    nut.disabled = true;
+                    nut.innerText = "Da nhan hang";
+                    return;
                 }
-            )
-            .catch(
-                function(err) {
 
-                    console.log(err);
+                if (lanThu < soLanToiDa) {
+                    lanThu++;
 
+                    setTimeout(function() {
+                        kiemTraKetQua();
+                    }, thoiGianCho);
 
-                    document.getElementById(
-                        "thongBao"
-                    ).innerText =
-                        "Khong xac nhan duoc ket qua";
+                } else {
+                    document.getElementById("thongBao").innerText =
+                        data && data.msg
+                            ? data.msg
+                            : "Chua xac nhan duoc trang thai don hang";
 
-
-                    nut.disabled =
-                        false;
-
+                    nut.disabled = false;
+                    nut.innerText = "Nhan hang";
                 }
-            );
+            })
+            .catch(function(err) {
+                console.error("Loi kiem tra ket qua:", err);
 
-        },
-        2500
-    );
+                if (lanThu < soLanToiDa) {
+                    lanThu++;
 
+                    setTimeout(function() {
+                        kiemTraKetQua();
+                    }, thoiGianCho);
+
+                } else {
+                    document.getElementById("thongBao").innerText =
+                        "Khong xac nhan duoc ket qua. Vui long kiem tra lai.";
+
+                    nut.disabled = false;
+                    nut.innerText = "Nhan hang";
+                }
+            });
+    }
+
+    setTimeout(function() {
+        kiemTraKetQua();
+    }, thoiGianCho);
 }
-
 
 /* =====================================================
    MO CAMERA
