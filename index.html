@@ -90,11 +90,61 @@ button {
     margin: 8px;
 }
 
+
+#khuDangNhap {
+    width: 95%;
+    max-width: 500px;
+    margin: 35px auto;
+    padding: 22px;
+    background: white;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+#khuDangNhap h2 {
+    margin-bottom: 25px;
+}
+
+#khuDangNhap input {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    font-size: 18px;
+    box-sizing: border-box;
+    border: 1px solid #999;
+    border-radius: 8px;
+}
+
+#btnDangNhap {
+    width: 100%;
+    margin: 18px 0 8px 0;
+}
+
+#baoLoiDangNhap {
+    min-height: 24px;
+    color: #b00020;
+    font-weight: bold;
+}
+
 </style>
 
 </head>
 
 <body>
+
+<div id="khuDangNhap">
+    <h2>GIAO NHAN QR</h2>
+
+    <input id="maNVDangNhap" type="text" placeholder="Nhap ma nhan vien" autocomplete="username">
+
+    <input id="matKhauDangNhap" type="password" placeholder="Nhap mat khau" autocomplete="current-password">
+
+    <button id="btnDangNhap" onclick="dangNhapTuApp()">DANG NHAP</button>
+
+    <div id="baoLoiDangNhap"></div>
+</div>
+
+<div id="khuUngDung" style="display:none;">
 
 <h2>GIAO NHAN QR</h2>
 
@@ -221,7 +271,7 @@ button {
 <form
     id="formNhanHang"
     method="POST"
-    action="https://script.google.com/macros/s/AKfycbxX8tCmxmDWaE0iqqzySEfgvIYaFhiL64cDAwtII9iwze_tPTGa8qyWcjSNZzvjLAVGw/exec"
+    action="https://script.google.com/macros/s/AKfycbxX8tCmxmDWaE0iqqzySEfgvIYFaFhiL64cDAwtII9iwze_tPTGa8qyWcjSNZzvjLAVGw/exec"
     target="khungGui"
     style="display:none;"
 >
@@ -285,6 +335,7 @@ let audioContext = null;
 
 const URL_APPS_SCRIPT =
     "https://script.google.com/macros/s/AKfycbxX8tCmxmDWaE0iqqzySEfgvIYFaFhiL64cDAwtII9iwze_tPTGa8qyWcjSNZzvjLAVGw/exec";
+
 
 /* =====================================================
    TAO TIENG BIP
@@ -1488,6 +1539,111 @@ async function quetMoi() {
 }
 
 
+
+/* =====================================================
+   DANG NHAP
+   ===================================================== */
+
+let maNVDaDangNhap = "";
+
+function dangNhapTuApp() {
+
+    const maNV = document.getElementById("maNVDangNhap").value.trim();
+    const matKhau = document.getElementById("matKhauDangNhap").value;
+
+    const baoLoi = document.getElementById("baoLoiDangNhap");
+    const nut = document.getElementById("btnDangNhap");
+
+    if (!maNV || !matKhau) {
+        baoLoi.innerText = "Hay nhap ma nhan vien va mat khau";
+        return;
+    }
+
+    nut.disabled = true;
+    baoLoi.style.color = "#333";
+    baoLoi.innerText = "Dang kiem tra dang nhap...";
+
+    const tenCallback = "nhanKetQuaDangNhap_" + Date.now();
+    let script = null;
+    let daXuLy = false;
+
+    const url =
+        URL_APPS_SCRIPT +
+        "?action=dangNhap" +
+        "&maNV=" + encodeURIComponent(maNV) +
+        "&matKhau=" + encodeURIComponent(matKhau) +
+        "&callback=" + encodeURIComponent(tenCallback);
+
+    function donDep() {
+        delete window[tenCallback];
+
+        if (script && script.parentNode) {
+            script.parentNode.removeChild(script);
+        }
+    }
+
+    window[tenCallback] = function(data) {
+
+        if (daXuLy) {
+            return;
+        }
+
+        daXuLy = true;
+        donDep();
+
+        if (data && data.ok) {
+
+            maNVDaDangNhap = data.maNV || maNV;
+
+            document.getElementById("maNVNhap").value = maNVDaDangNhap;
+            document.getElementById("maNVNhap").readOnly = true;
+
+            document.getElementById("khuDangNhap").style.display = "none";
+            document.getElementById("khuUngDung").style.display = "block";
+
+            document.getElementById("thongBao").innerText =
+                "Xin chao " + (data.tenNV || maNVDaDangNhap) + ". Dang mo camera...";
+
+            moCamera();
+
+        } else {
+
+            baoLoi.style.color = "#b00020";
+            baoLoi.innerText =
+                (data && data.msg) || "Dang nhap khong thanh cong";
+
+            nut.disabled = false;
+        }
+    };
+
+    script = document.createElement("script");
+    script.src = url;
+
+    script.onerror = function() {
+
+        if (daXuLy) {
+            return;
+        }
+
+        daXuLy = true;
+        donDep();
+
+        baoLoi.style.color = "#b00020";
+        baoLoi.innerText = "Khong ket noi duoc Apps Script";
+        nut.disabled = false;
+    };
+
+    document.body.appendChild(script);
+}
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" &&
+        document.getElementById("khuDangNhap").style.display !== "none") {
+        dangNhapTuApp();
+    }
+});
+
+
 /* =====================================================
    TU DONG MO CAMERA
    ===================================================== */
@@ -1495,11 +1651,13 @@ async function quetMoi() {
 window.onload =
     function() {
 
-        moCamera();
+        document.getElementById("maNVDangNhap").focus();
 
     };
 
 </script>
+
+</div>
 
 </body>
 
