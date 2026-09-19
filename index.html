@@ -748,6 +748,8 @@ function nhanHangTuApp() {
         return;
     }
 
+    const maQRGui = maQRHienTai;
+
     const maNV = document
         .getElementById("maNVNhap")
         .value
@@ -770,7 +772,7 @@ function nhanHangTuApp() {
         "NHAN";
 
     document.getElementById("guiMaQR").value =
-        maQRHienTai;
+        maQRGui;
 
     document.getElementById("guiMaNV").value =
         maNV;
@@ -793,30 +795,25 @@ function nhanHangTuApp() {
             soLanToiDa +
             ")...";
 
-        timDonTrenServer(maQRHienTai)
+        timDonTrenServer(maQRGui)
 
             .then(function(data) {
 
-               const trangThai =
-    data && data.trangThai
-        ? String(data.trangThai).trim().toUpperCase()
-        : "";
+                const trangThai =
+                    data && data.trangThai
+                        ? String(data.trangThai)
+                            .trim()
+                            .toUpperCase()
+                        : "";
 
-console.log("Du lieu tra ve:", data);
-console.log("Trang thai:", trangThai);
+                console.log("Du lieu tra ve:", data);
+                console.log("Trang thai:", trangThai);
 
-if (
-    data &&
-    data.ok === true &&
-    trangThai === "DANG_GIAO"
-) {
-    document.getElementById("thongBao").innerText =
-        "DA NHAN HANG THANH CONG";
-
-    capNhatNutNhanHang(data);
-
-    return;
-}
+                if (
+                    data &&
+                    data.ok === true &&
+                    trangThai === "DANG_GIAO"
+                ) {
 
                     document.getElementById("thongBao").innerText =
                         "DA NHAN HANG THANH CONG";
@@ -836,22 +833,29 @@ if (
 
                 } else {
 
-                    ddocument.getElementById("thongBao").innerText =
-    "Nhan hang chua thanh cong. Trang thai hien tai: " +
-    (data && data.trangThai
-        ? data.trangThai
-        : "KHONG CO DU LIEU") +
-    ". Loi: " +
-    (data && data.msg
-        ? data.msg
-        : "Khong ro nguyen nhan");
+                    document.getElementById("thongBao").innerText =
+                        "Nhan hang chua thanh cong. " +
+                        "Trang thai hien tai: " +
+                        (
+                            data && data.trangThai
+                                ? data.trangThai
+                                : "KHONG CO DU LIEU"
+                        ) +
+                        ". Loi: " +
+                        (
+                            data && data.msg
+                                ? data.msg
+                                : "Khong ro nguyen nhan"
+                        );
+
+                    nut.disabled = false;
                 }
 
             })
 
             .catch(function(err) {
 
-                console.log(err);
+                console.log("Loi kiem tra:", err);
 
                 if (lanThu < soLanToiDa) {
 
