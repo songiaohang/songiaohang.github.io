@@ -660,12 +660,8 @@ function timDonTrenServer(maQR) {
 
             if (data && data.ok) {
 
-                hienThiDonHang(data);
-
-                document.getElementById("thongBao").innerText =
-                    "Da tim thay don: " + maQR;
-
-                resolve(data);
+               hienThiDonHang(data);
+             resolve(data);
 
             }
             else {
