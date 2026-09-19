@@ -801,11 +801,26 @@ function nhanHangTuApp() {
 
             .then(function(data) {
 
-                if (
-                    data &&
-                    data.ok === true &&
-                    data.trangThai === "DANG_GIAO"
-                ) {
+               const trangThai =
+    data && data.trangThai
+        ? String(data.trangThai).trim().toUpperCase()
+        : "";
+
+console.log("Du lieu tra ve:", data);
+console.log("Trang thai:", trangThai);
+
+if (
+    data &&
+    data.ok === true &&
+    trangThai === "DANG_GIAO"
+) {
+    document.getElementById("thongBao").innerText =
+        "DA NHAN HANG THANH CONG";
+
+    capNhatNutNhanHang(data);
+
+    return;
+}
 
                     document.getElementById("thongBao").innerText =
                         "DA NHAN HANG THANH CONG";
@@ -825,12 +840,15 @@ function nhanHangTuApp() {
 
                 } else {
 
-                    document.getElementById("thongBao").innerText =
-                        data && data.msg
-                            ? data.msg
-                            : "Nhan hang chua thanh cong";
-
-                    nut.disabled = false;
+                    ddocument.getElementById("thongBao").innerText =
+    "Nhan hang chua thanh cong. Trang thai hien tai: " +
+    (data && data.trangThai
+        ? data.trangThai
+        : "KHONG CO DU LIEU") +
+    ". Loi: " +
+    (data && data.msg
+        ? data.msg
+        : "Khong ro nguyen nhan");
                 }
 
             })
